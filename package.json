@@ -7,11 +7,7 @@
     "module-name": "./bin/module-name"
   },
   "scripts": {
-    "test": "vows --spec --isolate",
-    "start": "node --harmony lib/STServerEngine.js",
-    "predeploy": "echo im about to deploy",
-    "postdeploy": "echo ive deployed",
-    "prepublish": "coffee --bare --compile --output lib/foo src/foo/*.coffee"
+    "start": "node --harmony lib/STServerEngine.js"
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
@@ -28,7 +24,7 @@
   "devDependencies": {},
   "preferGlobal": false,
   "private": true,
-  "subdomain": "oc_server",
+  "subdomain": "st_server",
   "analyze": true,
   "license": "MIT"
 }
