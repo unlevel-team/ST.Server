@@ -1,0 +1,14 @@
+{
+	"type": "Config",
+	"typeExtra": "Server",
+	
+	"nodes": {
+		"controlPort": 5673
+	},
+	
+	"server": {
+		"controlPort": 5675
+	}
+
+
+}
