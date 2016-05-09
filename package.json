@@ -15,9 +15,10 @@
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
-    "oc_server",
-    "oc",
-    "IoT"
+    "st_server",
+    "st",
+    "IoT",
+    "SomeThings"
   ],
   "dependencies": {
 	"portscanner" : "~1.0.0",
