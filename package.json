@@ -4,7 +4,9 @@
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
-    "start": "node --harmony lib/STServerEngine.js"
+	    "start_old": "node --harmony lib/STServerEngine.js",
+	    "start": "node lib_es5/STServerEngine.js",
+	    "gulp": "gulp"
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
@@ -19,9 +21,15 @@
 	"portscanner" : "~1.0.0",
     "express" : "^4.13.4",
     "socket.io " : "~1.4",
-    "body-parser" : "~1.15"
+    "body-parser" : "~1.15",
+    "source-map-support": "*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+	    "babel-preset-es2015": "*",
+	    "gulp": "*",
+	    "gulp-babel": "*",
+	    "gulp-sourcemaps": "*"
+	  },
   "preferGlobal": false,
   "private": true,
   "subdomain": "st_server",
