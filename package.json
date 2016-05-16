@@ -4,9 +4,10 @@
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
-	    "start_old": "node --harmony lib/STServerEngine.js",
-	    "start": "node lib_es5/STServerEngine.js",
-	    "gulp": "gulp"
+    "startdev": "node --harmony lib/STServerEngine.js dev",
+    "start": "node lib_es5/STServerEngine.js",
+    "gulp": "gulp",
+    "toES5": "gulp babel"
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
