@@ -2,13 +2,13 @@
 
 /*
  Nodes Net manager
- 
+
  - Provides net management for nodes.
  - Add data channel to node
  - Remove data channel from node
  - Get data channels of node
- 
- 
+
+
  */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -33,10 +33,10 @@ var NodesNetManager = function (_DataChannelsManager) {
 
 		var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(NodesNetManager).call(this));
 
-		var ndm = _this;
+		var nnetm = _this;
 
-		ndm.CONSTANTS.Events.DeleteDCOnNode = "Delete DC on Node";
-		ndm.CONSTANTS.Events.SetDCOptionsOnNode = "Set DC optons on Node";
+		nnetm.CONSTANTS.Events.DeleteDCOnNode = "Delete DC on Node";
+		nnetm.CONSTANTS.Events.SetDCOptionsOnNode = "Set DC optons on Node";
 		return _this;
 	}
 
@@ -101,7 +101,8 @@ var NodesNetManager = function (_DataChannelsManager) {
 	}, {
 		key: "removeDataChannelFromNode",
 		value: function removeDataChannelFromNode(node, dchID) {
-			this.removeDataChannel(node.config.nodeID + '.' + dchID);
+			var nnetm = this;
+			nnetm.removeDataChannel(node.config.nodeID + '.' + dchID);
 		}
 
 		/**
@@ -111,7 +112,8 @@ var NodesNetManager = function (_DataChannelsManager) {
 	}, {
 		key: "getDataChannelOfNode",
 		value: function getDataChannelOfNode(nodeID, dchID) {
-			return this.getDataChannelByID(nodeID + '.' + dchID);
+			var nnetm = this;
+			return nnetm.getDataChannelByID(nodeID + '.' + dchID);
 		}
 
 		/**
@@ -158,7 +160,7 @@ var NodesNetManager = function (_DataChannelsManager) {
 
 		/**
    * Create data channel from node
-   * 
+   *
    * Synchronization tasks
    */
 
@@ -211,6 +213,7 @@ var NodesNetManager = function (_DataChannelsManager) {
 	}, {
 		key: "_deleteDConServer",
 		value: function _deleteDConServer(dch, node) {
+
 			var nnetm = this;
 
 			console.log('<*> ST NodesNetManager._deleteDConServer'); // TODO REMOVE DEBUG LOG

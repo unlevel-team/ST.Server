@@ -265,7 +265,8 @@ var NodesNetService = function () {
 						"node": _node,
 						"nodeID": _node.config.nodeID,
 						"channelID": msg.channelID,
-						"options": msg.options
+						"options": msg.options,
+						"_nnets": nnets
 					});
 				} catch (e) {
 					// TODO: handle exception
@@ -358,16 +359,17 @@ var NodesNetService = function () {
 			var nnetm = nnets.nodesNetManager;
 			var stNode = options.node;
 
-			var message = {};
-
 			console.log('<*> ST NodesNetService._msg_DataChannelCreated'); // TODO REMOVE DEBUG LOG
 			console.log(msg); // TODO REMOVE DEBUG LOG
 			console.log(options); // TODO REMOVE DEBUG LOG
+			//		console.log(nnets);	// TODO REMOVE DEBUG LOG
 
-			var dcSearch = nnets.nodesNetManager.getDataChannelOfNode(options.nodeID, options.channelID);
+			var dcSearch = nnetm.getDataChannelOfNode(options.nodeID, options.channelID);
 			if (dcSearch.dataChannel == null) {
 				throw "Data channel not found.";
 			}
+
+			console.log('...'); // TODO REMOVE DEBUG LOG
 
 			var dch = dcSearch.dataChannel;
 
@@ -375,9 +377,11 @@ var NodesNetService = function () {
 				throw "Bad Data channel state.";
 			}
 
-			dch.config._netState = nnetm.CONSTANTS.States.DCstate_Ready;
+			console.log('...'); // TODO REMOVE DEBUG LOG
 
-			stNode.socket.emit(nnets.CONSTANTS.Messages.getDataChannelOptions, { "channelID": options.channelID }); // Emit message getDataChannelOptions
+			dch.config._netState = dch.CONSTANTS.States.DCstate_Ready;
+
+			stNode.socket.emit(nnetm.CONSTANTS.Messages.getDataChannelOptions, { "channelID": options.channelID }); // Emit message getDataChannelOptions
 		}
 
 		/**
@@ -390,7 +394,6 @@ var NodesNetService = function () {
 
 			var nnets = this;
 			var nnetm = nnets.nodesNetManager;
-			var message = {};
 
 			console.log('<*> ST NodesNetService._msg_DataChannelDeleted'); // TODO REMOVE DEBUG LOG
 			console.log(msg); // TODO REMOVE DEBUG LOG
@@ -416,8 +419,6 @@ var NodesNetService = function () {
 			var nnets = this;
 			var nnetm = nnets.nodesNetManager;
 			var node = options.node;
-
-			var message = {};
 
 			console.log('<*> ST NodesNetService._msg_DataChannelOptions'); // TODO REMOVE DEBUG LOG
 			console.log(msg); // TODO REMOVE DEBUG LOG
@@ -455,8 +456,6 @@ var NodesNetService = function () {
 			var nnetm = nnets.nodesNetManager;
 			var node = options.node;
 
-			var message = {};
-
 			console.log('<*> ST NodesNetService._msg_DCOptionsUpdated'); // TODO REMOVE DEBUG LOG
 			console.log(msg); // TODO REMOVE DEBUG LOG
 			console.log(options); // TODO REMOVE DEBUG LOG
@@ -471,11 +470,11 @@ var NodesNetService = function () {
 				var dch = dchSearch.dataChannel;
 				var dchOptions = options.options;
 
-				var _message = {
+				var message = {
 					"channelID": dch.config._dchID
 				};
 
-				node.socket.emit(nnets.CONSTANTS.Messages.getDataChannelOptions, _message); // Emit message getDataChannelOptions
+				node.socket.emit(nnetm.CONSTANTS.Messages.getDataChannelOptions, message); // Emit message getDataChannelOptions
 			} catch (e) {
 				// TODO: handle exception
 				console.log('<EEE> ST NodesNetService._msg_DCOptionsUpdated'); // TODO REMOVE DEBUG LOG
@@ -503,7 +502,7 @@ var NodesNetService = function () {
 				"netLocation": dch.config.netLocation
 			};
 
-			node.socket.emit(nnets.CONSTANTS.Messages.createDataChannel, message); // Emit message createDataChannel
+			node.socket.emit(nnetm.CONSTANTS.Messages.createDataChannel, message); // Emit message createDataChannel
 			console.log(' <·> ST NodesNetService.createDataChannel'); // TODO REMOVE DEBUG LOG
 			console.log(message); // TODO REMOVE DEBUG LOG
 		}
@@ -545,7 +544,7 @@ var NodesNetService = function () {
 		value: function _synchroNodeChannels(node, dchnlistOfNode, fromNode) {
 
 			var nnets = this;
-			var nnetm = nnets.nodesNetManager;
+			var nnetm = this.nodesNetManager;
 
 			if (fromNode == undefined) {
 				fromNode = false;

@@ -11,26 +11,31 @@ var express = require('express');
  * Use with Server control service
  */
 
-var SCS_RouteNetNodes = function () {
-	function SCS_RouteNetNodes(severNetManager) {
-		_classCallCheck(this, SCS_RouteNetNodes);
+var SCS_RouteNetServer = function () {
+	function SCS_RouteNetServer(severNetManager, expressRoute) {
+		_classCallCheck(this, SCS_RouteNetServer);
 
 		this.expressRoute = null;
 		this.messages = 0;
+
 		this.severNetManager = severNetManager;
+		this.expressRoute = expressRoute;
 
 		this.mapServiceRoutes();
 	}
 
-	_createClass(SCS_RouteNetNodes, [{
+	_createClass(SCS_RouteNetServer, [{
 		key: 'mapServiceRoutes',
 		value: function mapServiceRoutes() {
 
-			this.expressRoute = express.Router();
 			var routerNet = this;
 
+			if (routerNet.expressRoute == undefined || routerNet.expressRoute == null) {
+				routerNet.expressRoute = express.Router();
+			}
+
 			// middleware that is specific to this router
-			this.expressRoute.use(function messageCount(req, res, next) {
+			routerNet.expressRoute.use(function messageCount(req, res, next) {
 				routerNet.messages++;
 
 				//			res.setHeader('Content-Type', 'text/html');
@@ -41,7 +46,7 @@ var SCS_RouteNetNodes = function () {
 			});
 
 			// define the home page route
-			this.expressRoute.get('/', function (req, res) {
+			routerNet.expressRoute.get('/', function (req, res) {
 				var _response = {
 					"context": "ST Server Net of Server",
 					"action": "Default",
@@ -53,7 +58,7 @@ var SCS_RouteNetNodes = function () {
 			});
 
 			// List of data channels
-			this.expressRoute.get('/list/', function (req, res) {
+			routerNet.expressRoute.get('/list/', function (req, res) {
 
 				var _response = {
 					"context": "ST Server Net of Server",
@@ -78,7 +83,7 @@ var SCS_RouteNetNodes = function () {
 			});
 
 			// Create data channel on server
-			this.expressRoute.get('/create/:channelID/:mode', function (req, res) {
+			routerNet.expressRoute.get('/create/:channelID/:mode', function (req, res) {
 
 				var _response = {
 					"context": "ST Server Net of Server",
@@ -122,6 +127,8 @@ var SCS_RouteNetNodes = function () {
 		}
 	}]);
 
-	return SCS_RouteNetNodes;
+	return SCS_RouteNetServer;
 }();
+
+module.exports = SCS_RouteNetServer;
 //# sourceMappingURL=SCS_RouteNetServer.js.map

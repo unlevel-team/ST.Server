@@ -1,5 +1,13 @@
 "use strict";
 
+/**
+ * DataChannel library
+ * 
+ * Provides data channels to ST network
+ * 
+ * 
+ */
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -94,6 +102,7 @@ var DataChannel = function () {
 
 		var dataChannel = this;
 
+		// Map event MainLoop_Stop
 		this.eventEmitter.on(this.CONSTANTS.Events.MainLoop_Stop, function () {
 			clearInterval(dataChannel._mainLoop);
 			dataChannel.state = dataChannel.CONSTANTS.States.DCstate_Ready;
@@ -108,7 +117,10 @@ var DataChannel = function () {
 	_createClass(DataChannel, [{
 		key: 'initDataChannel',
 		value: function initDataChannel() {
-			if (this.state != this.CONSTANTS.States.DCstate_Config) {
+
+			var dc = this;
+
+			if (dc.state != dc.CONSTANTS.States.DCstate_Config) {
 				throw "Bad channel state";
 			}
 		}
@@ -120,11 +132,14 @@ var DataChannel = function () {
 	}, {
 		key: 'startDataChannel',
 		value: function startDataChannel() {
-			if (this.state != this.CONSTANTS.States.DCstate_Config || this.state != this.CONSTANTS.States.DCstate_Stop) {
+
+			var dc = this;
+
+			if (dc.state != dc.CONSTANTS.States.DCstate_Config || dc.state != dc.CONSTANTS.States.DCstate_Stop) {
 				throw "Bad channel state";
 			}
 
-			this.eventEmitter.emit(this.CONSTANTS.Events.ChannelStart);
+			dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStart); // Emit event ChannelStart
 		}
 
 		/**
@@ -134,11 +149,14 @@ var DataChannel = function () {
 	}, {
 		key: 'stopDataChannel',
 		value: function stopDataChannel() {
-			if (this.state != this.CONSTANTS.States.DCstate_Ready) {
+
+			var dc = this;
+
+			if (dc.state != dc.CONSTANTS.States.DCstate_Ready) {
 				throw "Bad channel state";
 			}
 
-			this.eventEmitter.emit(this.CONSTANTS.Events.ChannelStop);
+			dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStop); // Emit event ChannelStop
 		}
 
 		/**
@@ -148,8 +166,11 @@ var DataChannel = function () {
 	}, {
 		key: 'sendMessage',
 		value: function sendMessage(msg) {
+
+			var dc = this;
+
 			var dataMSG = new DataMessage(msg);
-			this.messagesList.push(dataMSG);
+			dc.messagesList.push(dataMSG);
 		}
 
 		/**
@@ -159,21 +180,22 @@ var DataChannel = function () {
 	}, {
 		key: 'mainLoop',
 		value: function mainLoop() {
-			var dataChannel = this;
 
-			if (dataChannel.state == dataChannel.CONSTANTS.States.DCstate_Ready) {
+			var dc = this;
+
+			if (dc.state == dc.CONSTANTS.States.DCstate_Ready) {
 				throw "Bad channel state";
 			}
 
-			dataChannel.state == dataChannel.CONSTANTS.States.DCstate_Working;
+			dc.state == dc.CONSTANTS.States.DCstate_Working;
 
-			dataChannel._mainLoop = setInterval(function () {
-				if (dataChannel.state == dataChannel.CONSTANTS.States.DCstate_Working) {
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.MainLoop_Tick);
+			dc._mainLoop = setInterval(function () {
+				if (dc.state == dc.CONSTANTS.States.DCstate_Working) {
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.MainLoop_Tick); // Emit event MainLoop_Tick
 				} else {
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.MainLoop_Stop);
-				}
-			}, dataChannel.config.loopTime);
+						dc.eventEmitter.emit(dc.CONSTANTS.Events.MainLoop_Stop); // Emit event MainLoop_Stop
+					}
+			}, dc.config.loopTime);
 		}
 
 		/**
@@ -183,7 +205,10 @@ var DataChannel = function () {
 	}, {
 		key: 'stopMainLoop',
 		value: function stopMainLoop() {
-			this.eventEmitter.emit(this.CONSTANTS.Events.MainLoop_Stop);
+
+			var dc = this;
+
+			dc.eventEmitter.emit(dc.CONSTANTS.Events.MainLoop_Stop); // Emit event MainLoop_Stop
 		}
 	}]);
 
@@ -219,18 +244,20 @@ var DataChannelsManager = function () {
    */
 		value: function addDataChannel(dch) {
 
+			var dcm = this;
+
 			if (dch.config.id == undefined || dch.config.id == null) {
 				throw "Channel needs ID.";
 			}
 
-			var dchSearch = this.getDataChannelByID(dch.config.id);
+			var dchSearch = dcm.getDataChannelByID(dch.config.id);
 			if (dchSearch.dataChannel != null) {
 				throw "Duplicated channel ID.";
 			}
 
-			this.channelsList.push(dch);
+			dcm.channelsList.push(dch);
 
-			this.eventEmitter.emit(this.CONSTANTS.Events.DataChannelAdded, dch.config.id);
+			dcm.eventEmitter.emit(dcm.CONSTANTS.Events.DataChannelAdded, dch.config.id); // Emit event DataChannelAdded
 		}
 
 		/**
@@ -241,22 +268,22 @@ var DataChannelsManager = function () {
 		key: 'removeDataChannel',
 		value: function removeDataChannel(dchID) {
 
-			var dchnm = this;
+			var dcm = this;
 
-			var dchSearch = dchnm.getDataChannelByID(dchID);
+			var dchSearch = dcm.getDataChannelByID(dchID);
 			if (dchSearch.dataChannel == null) {
 				throw "Channel not found.";
 			}
 
 			var dataChannel = dchSearch.dataChannel;
 
-			if (dataChannel.state == dchnm.CONSTANTS.States.DCstate_Working) {
+			if (dataChannel.state == dcm.CONSTANTS.States.DCstate_Working) {
 				throw "Bad channel state.";
 			}
 
-			dchnm.channelsList.splice(dchSearch.position, 1);
+			dcm.channelsList.splice(dchSearch.position, 1);
 
-			dchnm.eventEmitter.emit(dchnm.CONSTANTS.Events.DataChannelRemoved, dchID);
+			dcm.eventEmitter.emit(dcm.CONSTANTS.Events.DataChannelRemoved, dchID); // Emit event DataChannelRemoved
 		}
 
 		/**
@@ -266,13 +293,15 @@ var DataChannelsManager = function () {
 	}, {
 		key: 'getDataChannelByID',
 		value: function getDataChannelByID(dchID) {
+
+			var dcm = this;
 			var dch = null;
 
 			var _i = 0;
-			for (_i = 0; _i < this.channelsList.length; _i++) {
+			for (_i = 0; _i < dcm.channelsList.length; _i++) {
 
-				if (this.channelsList[_i].config.id == dchID) {
-					dch = this.channelsList[_i];
+				if (dcm.channelsList[_i].config.id == dchID) {
+					dch = dcm.channelsList[_i];
 					break;
 				}
 			}

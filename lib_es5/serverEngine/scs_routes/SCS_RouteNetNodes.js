@@ -14,7 +14,7 @@ var bodyParser = require('body-parser');
  */
 
 var SCS_RouteNetNodes = function () {
-	function SCS_RouteNetNodes(nodesManager, nodesNetManager) {
+	function SCS_RouteNetNodes(nodesManager, nodesNetManager, expressRoute) {
 		_classCallCheck(this, SCS_RouteNetNodes);
 
 		this.expressRoute = null;
@@ -22,6 +22,7 @@ var SCS_RouteNetNodes = function () {
 
 		this.nodesManager = nodesManager;
 		this.nodesNetManager = nodesNetManager;
+		this.expressRoute = expressRoute;
 
 		this.mapServiceRoutes();
 	}
@@ -31,7 +32,10 @@ var SCS_RouteNetNodes = function () {
 		value: function mapServiceRoutes() {
 
 			var routerNet = this;
-			routerNet.expressRoute = express.Router();
+
+			if (routerNet.expressRoute == undefined || routerNet.expressRoute == null) {
+				routerNet.expressRoute = express.Router();
+			}
 
 			//create application/json parser
 			var jsonParser = bodyParser.json();

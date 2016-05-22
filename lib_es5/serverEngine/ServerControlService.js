@@ -24,7 +24,7 @@ var express = require('express');
 var SCS_RouteSensors = require('./scs_routes/SCS_RouteSensors.js');
 var SCS_RouteActuators = require('./scs_routes/SCS_RouteActuators.js');
 var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
-var SCS_RouteNetNodes = require('./scs_routes/SCS_RouteNetNodes.js');
+var SCS_RouteNet = require('./scs_routes/SCS_RouteNet.js');
 
 /**
  * ServerControlService CONSTANTS
@@ -75,7 +75,7 @@ var ServerControlService = function () {
 		this.routes_Sensors = null;
 		this.routes_Actuators = null;
 		this.routes_Nodes = null;
-		this.routes_NetNodes = null;
+		this.routes_Net = null;
 	}
 
 	/**
@@ -89,11 +89,11 @@ var ServerControlService = function () {
 		key: 'startService',
 		value: function startService() {
 
-			if (this.server != null) {
+			var scs = this;
+
+			if (scs.server != null) {
 				throw "Server is running";
 			}
-
-			var scs = this;
 
 			scs.server = express();
 			//		scs.server.use(express.bodyParser());	// Middleware for use JSON on HTTP posts.
@@ -144,21 +144,26 @@ var ServerControlService = function () {
 		key: 'mapServiceRoutes',
 		value: function mapServiceRoutes() {
 
-			this.server.get('/', function (req, res) {
+			var scs = this;
+
+			scs.server.get('/', function (req, res) {
 				res.send('ST Server Control Service');
 			});
 
-			this.routes_Sensors = new SCS_RouteSensors(this.stServer.sensorsManager);
-			this.server.use('/Sensors', this.routes_Sensors.expressRoute);
+			scs.routes_Sensors = new SCS_RouteSensors(scs.stServer.sensorsManager);
+			scs.server.use('/Sensors', scs.routes_Sensors.expressRoute);
 
-			this.routes_Actuators = new SCS_RouteActuators(this.stServer.actuatorsManager);
-			this.server.use('/Actuators', this.routes_Actuators.expressRoute);
+			scs.routes_Actuators = new SCS_RouteActuators(scs.stServer.actuatorsManager);
+			scs.server.use('/Actuators', scs.routes_Actuators.expressRoute);
 
-			this.routes_Nodes = new SCS_RouteNodes(this.stServer.nodesManager);
-			this.server.use('/Nodes', this.routes_Nodes.expressRoute);
+			scs.routes_Nodes = new SCS_RouteNodes(scs.stServer.nodesManager);
+			scs.server.use('/Nodes', scs.routes_Nodes.expressRoute);
 
-			this.routes_NetNodes = new SCS_RouteNetNodes(this.stServer.nodesManager, this.stServer.nodesNetManager);
-			this.server.use('/Net/Nodes', this.routes_NetNodes.expressRoute);
+			scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
+			scs.server.use('/Net', scs.routes_Net.expressRoute);
+
+			//		scs.routes_NetNodes = new SCS_RouteNetNodes(scs.stServer.nodesManager, scs.stServer.nodesNetManager);
+			//		scs.server.use('/Net/Nodes', scs.routes_NetNodes.expressRoute);
 		}
 
 		/**

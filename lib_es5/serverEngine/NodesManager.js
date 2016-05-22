@@ -67,7 +67,7 @@ var Node = function () {
 
 		if (this.config == null) {
 			this.state = this.CONSTANTS.States.Setup;
-			this.socket.emit(this.CONSTANTS.Messages.getNodeInfo);
+			this.socket.emit(this.CONSTANTS.Messages.getNodeInfo); // Emit message getNodeInfo
 		}
 	}
 
@@ -82,8 +82,9 @@ var Node = function () {
 
 			var node = this;
 
+			// Map event disconnect
 			node.socket.on('disconnect', function () {
-				node.eventEmitter.emit(node.CONSTANTS.Events.NodeDisconnected, { "node": node });
+				node.eventEmitter.emit(node.CONSTANTS.Events.NodeDisconnected, { "node": node }); // Emit event NodeDisconnected
 			});
 		}
 
@@ -97,6 +98,7 @@ var Node = function () {
 
 			var node = this;
 
+			// Map message NodeInfo
 			node.socket.on(node.CONSTANTS.Messages.NodeInfo, function (msg) {
 
 				console.log('<*> ST Node.Messages.NodeInfo'); // TODO REMOVE DEBUG LOG
@@ -104,6 +106,7 @@ var Node = function () {
 
 				node.config = msg;
 
+				// Emit event NodeAdded
 				node.eventEmitter.emit(node.CONSTANTS.Events.NodeAdded, { "node": node });
 			});
 		}
@@ -140,35 +143,17 @@ var NodesManager = function () {
 			var stNode = new Node(config, socket);
 			var ndm = this;
 
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|··· 
-			// Event NodeAdded
+			// Map Event NodeAdded
 			stNode.eventEmitter.on(stNode.CONSTANTS.Events.NodeAdded, function (data) {
 
-				var nodeSearch = ndm.getNodeByID(data.node.config.nodeID);
-				if (nodeSearch.stNode != null) {
-
-					stNode.socket.emit(ndm.CONSTANTS.Messages.BadNodeConfig, {
-						"message": "nodeID duplicated."
-					});
-				} else {
-					data.node.state = ndm.CONSTANTS.States.Ready;
-					ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeAdded, data); // Emit event NodeAdded
-				}
+				ndm._event_NodeAdded(data, stNode);
 			});
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|··· 
 
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|··· 
-			// Event NodeDisconnected		
+			// Map Event NodeDisconnected		
 			stNode.eventEmitter.on(stNode.CONSTANTS.Events.NodeDisconnected, function (data) {
 
-				var nodeSearh = ndm.getNodeBySocket(data.node.socket);
-
-				if (nodeSearh.stNode != null) {
-					ndm.nodeList.splice(nodeSearh.position, 1);
-					ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeRemoved); // Emit event NodeRemoved
-				}
+				ndm._event_NodeDisconnected(data, stNode);
 			});
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|··· 
 
 			ndm.nodeList.push(stNode);
 		}
@@ -185,18 +170,26 @@ var NodesManager = function () {
 			var nodesList = ndm.nodeList;
 
 			var node = null;
-			var _i = 0;
+			var _i = -1;
 
 			if (state == undefined) {
 				state = NodesManager_CONSTANTS.States.Ready;
 			}
 
-			for (_i = 0; _i < nodesList.length; _i++) {
-				if (nodesList[_i].config.nodeID == nodeID && nodesList[_i].state == state) {
-					node = nodesList[_i];
-					break;
-				}
+			_i = nodesList.map(function (x) {
+				return x.config.nodeID;
+			}).indexOf(nodeID);
+			if (_i != -1) {
+				node = nodesList[_i];
 			}
+
+			//		for (_i = 0; _i < nodesList.length; _i++) {
+			//			if (nodesList[_i].config.nodeID == nodeID &&
+			//					nodesList[_i].state == state) {
+			//				node = nodesList[_i];
+			//				break;
+			//			}
+			//		}
 
 			return {
 				"stNode": node,
@@ -218,11 +211,11 @@ var NodesManager = function () {
 			var node = null;
 			var _i = 0;
 
-			for (_i = 0; _i < nodesList.length; _i++) {
-				if (nodesList[_i].socket.id == socket.id) {
-					node = nodesList[_i];
-					break;
-				}
+			_i = nodesList.map(function (x) {
+				return x.socket.id;
+			}).indexOf(socket.id);
+			if (_i != -1) {
+				node = nodesList[_i];
 			}
 
 			return {
@@ -242,7 +235,48 @@ var NodesManager = function () {
 
 			var nodeSearch = ndm.getNodeByID(nodeID);
 			if (nodeSearch.stNode != null) {
-				nodeSearch.stNode.socket.emit(ndm.CONSTANTS.Messages.ShutDownNode); // Emit event ShutDownNode
+				nodeSearch.stNode.socket.emit(ndm.CONSTANTS.Messages.ShutDownNode); // Emit message ShutDownNode
+			}
+		}
+
+		/**
+   * Event NodeAdded
+   */
+
+	}, {
+		key: "_event_NodeAdded",
+		value: function _event_NodeAdded(data, stNode) {
+
+			var ndm = this;
+
+			var nodeSearch = ndm.getNodeByID(data.node.config.nodeID);
+			if (nodeSearch.stNode != null && nodeSearch.stNode.state == ndm.CONSTANTS.States.Ready) {
+
+				// Emit message BadNodeConfig
+				stNode.socket.emit(ndm.CONSTANTS.Messages.BadNodeConfig, {
+					"message": "nodeID duplicated."
+				});
+			} else {
+				data.node.state = ndm.CONSTANTS.States.Ready;
+				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeAdded, data); // Emit event NodeAdded
+			}
+		}
+
+		/**
+   * Event NodeDisconnected
+   */
+
+	}, {
+		key: "_event_NodeDisconnected",
+		value: function _event_NodeDisconnected(data, stNode) {
+
+			var ndm = this;
+
+			var nodeSearh = ndm.getNodeBySocket(data.node.socket);
+
+			if (nodeSearh.stNode != null) {
+				ndm.nodeList.splice(nodeSearh.position, 1);
+				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeRemoved); // Emit event NodeRemoved
 			}
 		}
 	}]);

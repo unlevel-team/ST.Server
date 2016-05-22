@@ -1,5 +1,13 @@
 "use strict";
 
+/**
+ * DC_SocketIO library
+ * 
+ * Provides data channel to ST network based on socket.io
+ * 
+ * 
+ */
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
@@ -34,14 +42,17 @@ var DC_SocketIO = function (_DataChannel) {
 	_createClass(DC_SocketIO, [{
 		key: 'initDataChannel',
 		value: function initDataChannel() {
+
+			var dc = this;
+
 			_get(Object.getPrototypeOf(DC_SocketIO.prototype), 'initDataChannel', this).call(this);
 
-			switch (this.config.mode) {
-				case this.CONSTANTS.Config.modeIN:
-					this.initDC_modeIN();
+			switch (dc.config.mode) {
+				case dc.CONSTANTS.Config.modeIN:
+					dc.initDC_modeIN();
 					break;
-				case this.CONSTANTS.Config.modeOUT:
-					this.initDC_modeOUT();
+				case dc.CONSTANTS.Config.modeOUT:
+					dc.initDC_modeOUT();
 					break;
 				default:
 					break;
@@ -56,44 +67,50 @@ var DC_SocketIO = function (_DataChannel) {
 		key: 'initDC_modeIN',
 		value: function initDC_modeIN() {
 
-			if (this.server != null) {
+			var dc = this;
+
+			if (dc.server != null) {
 				throw "Server is initialized";
 			}
 
-			var dataChannel = this;
-
 			// Map event: Channel stop
-			dataChannel.eventEmitter.on(dataChannel.CONSTANTS.Events.ChannelStop, function () {
-				dataChannel.server.close();
-				dataChannel.state = dataChannel.CONSTANTS.States.DCstate_Stop;
-				dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ChannelStopped);
+			dc.eventEmitter.on(dc.CONSTANTS.Events.ChannelStop, function () {
+				dc.server.close();
+				dc.state = dc.CONSTANTS.States.DCstate_Stop;
+				dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStopped);
 			});
 
 			// Map event: Channel start
-			dataChannel.eventEmitter.on(dataChannel.CONSTANTS.Events.ChannelStart, function () {
-				dataChannel.server.listen(this.config.socketPort); // listen on Socket port
-				dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ChannelStarted);
+			dc.eventEmitter.on(dc.CONSTANTS.Events.ChannelStart, function () {
+				dc.server.listen(dc.config.socketPort); // listen on Socket port
+				dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStarted);
 			});
 
-			this.server = require('socket.io')();
+			dc.server = require('socket.io')();
 
-			this.server.on('connection', function (socket) {
-				// Map connection of Socket
+			// Map connection of Socket
+			dc.server.on('connection', function (socket) {
 
-				dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ClientConnected, { "socket": socket });
+				dc.eventEmitter.emit(dc.CONSTANTS.Events.ClientConnected, { "socket": socket }); // Emit event ClientConnected
 
+				// Map disconnection of Socket
 				socket.on('disconnect', function () {
-					// Map disconnection of Socket
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ClientDisconnected, { "socket": socket });
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.ClientDisconnected, { "socket": socket }); // Emit event ClientDisconnected
 				});
 
-				socket.on(dataChannel.CONSTANTS.Messages.DataMessage, function (msg) {
-					// Map message of Socket
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.MessageReceived, msg);
+				// Map message of Socket
+				socket.on(dc.CONSTANTS.Messages.DataMessage, function (msg) {
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.MessageReceived, msg); // Emit event MessageReceived
 				});
 			});
 
-			dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ChannelInitialized); // Emit event: Channel initialized
+			dc.eventEmitter.on(dc.CONSTANTS.Events.MainLoop_Tick, function () {
+				// Map event MainLoop_Tick
+				dc.socket.emit(dc.CONSTANTS.Messages.DataMessage, dc.messagesList); // Emit messages to socket
+				dc.messagesList = [];
+			});
+
+			dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelInitialized); // Emit event Channel initialized
 		}
 
 		/**
@@ -103,37 +120,51 @@ var DC_SocketIO = function (_DataChannel) {
 	}, {
 		key: 'initDC_modeOUT',
 		value: function initDC_modeOUT() {
-			if (this.socket != null) {
+
+			var dc = this;
+
+			if (dc.socket != null) {
 				throw "Socket is initialized";
 			}
 
-			var dataChannel = this;
-			dataChannel._serverURL = 'http://' + dataChannel.config.netLocation + ':' + dataChannel.config.socketPort;
+			dc._serverURL = 'http://' + dc.config.netLocation + ':' + dc.config.socketPort;
 
-			// Map event: Channel start
-			dataChannel.eventEmitter.on(dataChannel.CONSTANTS.Events.ChannelStart, function () {
+			// Map event: Channel stop
+			dc.eventEmitter.on(dc.CONSTANTS.Events.ChannelStop, function () {
+				dc.socket.close();
+				dc.state = dc.CONSTANTS.States.DCstate_Stop;
+				dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStopped);
+			});
 
-				ddataChannel.socket = require('socket.io-client')(dataChannel._serverURL); // connect to server
+			// Map event ChannelStart
+			dc.eventEmitter.on(dc.CONSTANTS.Events.ChannelStart, function () {
 
-				ddataChannel.socket.on('connect', function () {
-					// Map connection to Server
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ChannelStarted);
+				dc.socket = require('socket.io-client')(dc._serverURL); // connect to server
+
+				// Map event connect
+				dc.socket.on('connect', function () {
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStarted); // Emit event ChannelStarted
 				});
 
-				ddataChannel.socket.on('disconnect', function () {
-					// Map disconnection from Server
-					dataChannel.eventEmitter.emit(dataChannel.CONSTANTS.Events.ChannelStop);
+				// Map event disconnect
+				dc.socket.on('disconnect', function () {
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelStop); // Emit event ChannelStop
+				});
+
+				// Map message of Socket
+				dc.socket.on(dc.CONSTANTS.Messages.DataMessage, function (msg) {
+					dc.eventEmitter.emit(dc.CONSTANTS.Events.MessageReceived, msg); // Emit event MessageReceived
 				});
 			});
 
-			ddataChannel.eventEmitter.on(dataChannel.CONSTANTS.Events.MainLoop_Tick, function () {
-				// Map main loop tick
-				dataChannel.socket.emit(dataChannel.CONSTANTS.Messages.DataMessage, dataChannel.messagesList);
-				dataChannel.messagesList = [];
+			// Map event MainLoop_Tick
+			dc.eventEmitter.on(dc.CONSTANTS.Events.MainLoop_Tick, function () {
+				dc.socket.emit(dc.CONSTANTS.Messages.DataMessage, dc.messagesList); // Emit messages to socket
+				dc.messagesList = [];
 			});
 
-			this.state = this.CONSTANTS.States.DCstate_Ready; // Change state to Ready
-			this.eventEmitter.emit(this.CONSTANTS.Events.ChannelInitialized); // Emit event: Channel initialized
+			dc.state = dc.CONSTANTS.States.DCstate_Ready; // Change state to Ready
+			dc.eventEmitter.emit(dc.CONSTANTS.Events.ChannelInitialized); // Emit event: Channel initialized
 		}
 	}]);
 

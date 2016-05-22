@@ -31,6 +31,8 @@ var NodesNetService = require('./NodesNetService.js').NodesNetService;
 
 var ServerControlService = require('./ServerControlService.js');
 
+var COMSystem = require('../stNetwork/COMSystem.js').COMSystem;
+
 var readline = require('readline');
 
 /**
@@ -135,6 +137,7 @@ var STServer = function () {
 			//-------------------------------------------------------------------------------|\/|---
 			stServer.nodesManager = new NodesManager();
 
+			// Map event NodeAdded
 			stServer.nodesManager.eventEmitter.on(stServer.nodesManager.CONSTANTS.Events.NodeAdded, function (data) {
 				console.log('<···> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
 				console.log(' <···> Events.NodeAdded'); // TODO REMOVE DEBUG LOG
@@ -143,6 +146,7 @@ var STServer = function () {
 				stServer.actuatorsManager.addActuatorsFromNode(data.node); // bind Node to Actuators manager
 			});
 
+			// Map event NodeRemoved
 			stServer.nodesManager.eventEmitter.on(stServer.nodesManager.CONSTANTS.Events.NodeRemoved, function (data) {
 				console.log('<···> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
 				console.log(' <···> Events.NodeRemoved'); // TODO REMOVE DEBUG LOG
@@ -247,7 +251,46 @@ var STServer = function () {
 		}
 
 		/**
+   * Initialize COM system
+   */
+
+	}, {
+		key: 'init_ServerCOMSystem',
+		value: function init_ServerCOMSystem() {
+
+			var stServer = this;
+
+			if (stServer.comSYS != null) {
+				throw 'Server COM System initialized.';
+			}
+
+			var socket = stServer.nodesManager.socket;
+
+			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			// COM System
+			var comSYS_Config = {
+				"controlChannel": socket,
+				"role": "Server",
+				"nodesManager": stServer.nodesManager,
+				"sensorManager": stServer.sensorsManager,
+				"actuatorsManager": stServer.actuatorsManager
+			};
+
+			stServer.comSYS = COMSystem.getCOMSystem(comSYS_Config);
+
+			try {
+				stServer.comSYS.initialize();
+			} catch (e) {
+				console.log('<EEE> ST Server.init_ServerCOMSystem'); // TODO REMOVE DEBUG LOG
+				console.log(' <···> ' + e); // TODO REMOVE DEBUG LOG
+				stServer._byebye();
+			}
+		}
+
+		/**
    * Initialize Server Control Service
+   * 
+   * Is the server for manage messages HTTP/REST
    */
 
 	}, {

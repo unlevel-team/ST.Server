@@ -2,11 +2,11 @@
 
 /*
  Nodes Control service
- 
+
  - Provides Nodes control service
  - Start/Stop service
  - Manage message [getSTNetworkInfo]->[STNetworkInfo]
- 
+
  */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -22,6 +22,7 @@ var DataChannel = require('../stNetwork/DataChannel.js').DataChannel;
  * NodesControlService CONSTANTS
  */
 var NodesControlService_CONSTANTS = {
+
 	"Events": {
 		"ConfigError": "Config Error",
 
@@ -47,9 +48,9 @@ var NodesControlService_CONSTANTS = {
 
 /*
  * NodesControlService
- * 
- * Is the service for send and receive data control with Nodes
- * 
+ *
+ * Is the service for send and receive control messages with Nodes
+ *
  */
 
 var NodesControlService = function () {
@@ -68,7 +69,7 @@ var NodesControlService = function () {
 
 	/**
   * Start service
-  * 
+  *
   * @throws Exceptions
   */
 
@@ -77,62 +78,47 @@ var NodesControlService = function () {
 		key: 'startService',
 		value: function startService() {
 
-			if (this.server != null) {
+			var ncs = this;
+
+			if (ncs.server != null) {
 				throw "Server is running";
 			}
 
-			var ncs = this;
-
 			ncs.server = require('socket.io')();
 
+			// Map event connection... provides a new socket
 			ncs.server.on('connection', function (socket) {
 
+				// Emit event NodeConnected
 				ncs.eventEmitter.emit(ncs.CONSTANTS.Events.NodeConnected, { "socket": socket });
 
 				socket.on('disconnect', function () {
+
+					// Emit event NodeDisconnected
 					ncs.eventEmitter.emit(ncs.CONSTANTS.Events.NodeDisconnected, { "socket": socket });
 				});
 
 				ncs.mapControlMessages(socket);
 			});
 
-			//		DataChannel.portInUse( ncs.config.nodes.controlPort, function(_portInUse) {
-			//			if (_portInUse) {
-			//				ncs.eventEmitter.emit( ncs.CONSTANTS.Events.ConfigError );
-			//			} else {
-			//				ncs.server.listen( ncs.config.nodes.controlPort );
-			//				ncs.eventEmitter.emit( ncs.CONSTANTS.Events.ServerListening );
-			//			}
-			//		});
-
 			// Checks the status of a single port
 			portscanner.checkPortStatus(ncs.config.nodes.controlPort, '127.0.0.1', function (error, status) {
 				// Status is 'open' if currently in use or 'closed' if available
-				console.log(status);
+				// console.log(status)
 
 				switch (status) {
 					case 'closed':
 						ncs.server.listen(ncs.config.nodes.controlPort);
 						ncs.state = ncs.CONSTANTS.States.Running;
-						ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ServerListening);
+						ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ServerListening); // Emit event ServerListening
 						break;
 
 					default:
 						ncs.state = ncs.CONSTANTS.States.Error;
-						ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ConfigError);
+						ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ConfigError); // Emit event ConfigError
 						break;
 				}
 			});
-
-			//		try {
-			//			ncs.server.listen( ncs.config.nodes.controlPort );
-			//			ncs.eventEmitter.emit( ncs.CONSTANTS.Events.ServerListening );
-			//			
-			//		} catch (e) {
-			//			// TODO: handle exception
-			//			ncs.eventEmitter.emit( ncs.CONSTANTS.Events.ConfigError );
-			//
-			//		}
 		}
 
 		/**
@@ -144,8 +130,7 @@ var NodesControlService = function () {
 		value: function mapControlMessages(socket) {
 			var ncs = this;
 
-			// · · · · · ·  ¨¨¨  · · · · · ·  ¨¨¨  · · · · · ·  ¨¨¨  · · · · · · |\/|··· 
-			// Message getSTNetworkInfo
+			// Map Message getSTNetworkInfo
 			socket.on(ncs.CONSTANTS.Messages.getSTNetworkInfo, function (msg) {
 
 				var dataMSG = {
@@ -154,14 +139,13 @@ var NodesControlService = function () {
 					"controlPort": ncs.config.nodes.controlPort
 				};
 
-				socket.emit(ncs.CONSTANTS.Messages.STNetworkInfo, dataMSG);
+				socket.emit(ncs.CONSTANTS.Messages.STNetworkInfo, dataMSG); // Send Message STNetworkInfo
 			});
-			// · · · · · ·  ¨¨¨  · · · · · ·  ¨¨¨  · · · · · ·  ¨¨¨  · · · · · · |/\|···
 		}
 
 		/**
    * Stop service
-   * 
+   *
    * @throws Exceptions
    */
 
@@ -179,7 +163,7 @@ var NodesControlService = function () {
 				ncs.server.close();
 			}
 
-			ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ServerClosed);
+			ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ServerClosed); // Emit event ServerClosed
 			ncs.server = null;
 		}
 	}]);
