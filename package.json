@@ -1,6 +1,6 @@
 {
-  "name": "st_server",
-  "version": "0.0.1",
+  "name": "st.server",
+  "version": "0.0.1-alpha00-build001",
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
@@ -11,7 +11,7 @@
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
-    "st_server",
+    "st.server",
     "st",
     "IoT",
     "SomeThings",
@@ -23,15 +23,15 @@
     "express" : "^4.13.4",
     "socket.io " : "~1.4",
     "body-parser" : "~1.15",
-    "source-map-support": "*"
+    "source-map-support": "*",
+    "st.network": "file:../NLVL_STNetwork/"
 
   },
   "devDependencies": {
 	    "babel-preset-es2015": "*",
 	    "gulp": "*",
 	    "gulp-babel": "*",
-	    "gulp-sourcemaps": "*",
-	    "st.network": "ssh://gituser@repos.waw.net/NLVL_STNetwork.git"
+	    "gulp-sourcemaps": "*"
 
 	  },
   "preferGlobal": false,
@@ -39,3 +39,6 @@
   "analyze": true,
   "license": "MIT"
 }
+
+
+
