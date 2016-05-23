@@ -24,16 +24,18 @@
     "socket.io " : "~1.4",
     "body-parser" : "~1.15",
     "source-map-support": "*"
+
   },
   "devDependencies": {
 	    "babel-preset-es2015": "*",
 	    "gulp": "*",
 	    "gulp-babel": "*",
-	    "gulp-sourcemaps": "*"
+	    "gulp-sourcemaps": "*",
+	    "st.network": "ssh://gituser@repos.waw.net/NLVL_STNetwork.git"
+
 	  },
   "preferGlobal": false,
   "private": true,
-  "subdomain": "st_server",
   "analyze": true,
   "license": "MIT"
 }
