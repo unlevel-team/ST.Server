@@ -7,11 +7,14 @@
  */
 
 // Gulp+Babel tricks · · - - · · · - - · \/ · ·
+var devMode = false;
+
 if (!process.argv[2] || process.argv[2] != 'dev') {
 
 	var gulp_babelTricks = require('./toES5.js');
 	gulp_babelTricks.source_map_support_Install();
 } else {
+	devMode = true;
 	console.log('Running in Dev mode...'); // TODO REMOVE DEBUG LOG
 	console.log('Arguments'); // TODO REMOVE DEBUG LOG
 	console.log(process.argv); // TODO REMOVE DEBUG LOG
@@ -26,6 +29,9 @@ var STServer = require('./serverEngine/ST_Server.js');
  */
 var stServer = new STServer();
 try {
+
+	stServer._devMode = devMode;
+
 	stServer.init_Server();
 	stServer.init_NodesControlService();
 
@@ -35,7 +41,6 @@ try {
 	stServer.init_ServerCOMSystem();
 
 	stServer.init_ServerControlService();
-
 	stServer.init_MiniCLI();
 } catch (e) {
 	// TODO: handle exception

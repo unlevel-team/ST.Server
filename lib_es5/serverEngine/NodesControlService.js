@@ -16,7 +16,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var EventEmitter = require('events').EventEmitter;
 var portscanner = require('portscanner');
 
-var DataChannel = require('../stNetwork/DataChannel.js').DataChannel;
+var DataChannel = require('st.network').DataChannel;
+//let DataChannel = require('../stNetwork/DataChannel.js').DataChannel;
 
 /**
  * NodesControlService CONSTANTS

@@ -33,7 +33,8 @@ var NodesNetService = require('./NodesNetService.js').NodesNetService;
 
 var ServerControlService = require('./ServerControlService.js');
 
-var COMSystem = require('../stNetwork/COMSystem.js').COMSystem;
+var COMSystem = require('st.network').COMSystem;
+//let COMSystem = require('../stNetwork/COMSystem.js').COMSystem;
 
 var readline = require('readline');
 
