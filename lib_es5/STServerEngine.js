@@ -32,6 +32,8 @@ try {
 	stServer.init_NodesNetManager();
 	stServer.init_NodesNetService();
 
+	stServer.init_ServerCOMSystem();
+
 	stServer.init_ServerControlService();
 
 	stServer.init_MiniCLI();

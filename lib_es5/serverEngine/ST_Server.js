@@ -17,6 +17,8 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ServerConfiguration = require('./ServerConfiguration.js');
@@ -264,17 +266,18 @@ var STServer = function () {
 				throw 'Server COM System initialized.';
 			}
 
-			var socket = stServer.nodesManager.socket;
+			//		let socket = stServer.nodesManager.socket;
 
 			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
 			// COM System
-			var comSYS_Config = {
-				"controlChannel": socket,
+			var comSYS_Config = _defineProperty({
+				"controlChannel": null,
 				"role": "Server",
 				"nodesManager": stServer.nodesManager,
+				"nodesNetManager": stServer.nodesNetManager,
 				"sensorManager": stServer.sensorsManager,
 				"actuatorsManager": stServer.actuatorsManager
-			};
+			}, 'nodesNetManager', stServer.nodesNetManager);
 
 			stServer.comSYS = COMSystem.getCOMSystem(comSYS_Config);
 

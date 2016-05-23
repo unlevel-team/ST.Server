@@ -244,9 +244,9 @@ var COMSystem = function () {
 
 			var _config = comSYS.config;
 
-			if (_config.controlChannel == undefined) {
-				throw "controlChannel is required.";
-			}
+			//		if (_config.controlChannel == undefined) {
+			//			throw "controlChannel is required.";
+			//		}
 		}
 
 		/**
