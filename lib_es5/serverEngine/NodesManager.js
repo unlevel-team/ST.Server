@@ -65,7 +65,7 @@ var Node = function () {
 		this.mapSocketEvents();
 		this.mapSocketMessages();
 
-		if (this.config == null) {
+		if (this.config === undefined || this.config === null) {
 			this.state = this.CONSTANTS.States.Setup;
 			this.socket.emit(this.CONSTANTS.Messages.getNodeInfo); // Emit message getNodeInfo
 		}
@@ -172,14 +172,14 @@ var NodesManager = function () {
 			var node = null;
 			var _i = -1;
 
-			if (state == undefined) {
+			if (state === undefined) {
 				state = NodesManager_CONSTANTS.States.Ready;
 			}
 
 			_i = nodesList.map(function (x) {
 				return x.config.nodeID;
 			}).indexOf(nodeID);
-			if (_i != -1) {
+			if (_i !== -1) {
 				node = nodesList[_i];
 			}
 
@@ -214,7 +214,7 @@ var NodesManager = function () {
 			_i = nodesList.map(function (x) {
 				return x.socket.id;
 			}).indexOf(socket.id);
-			if (_i != -1) {
+			if (_i !== -1) {
 				node = nodesList[_i];
 			}
 
@@ -234,7 +234,7 @@ var NodesManager = function () {
 			var ndm = this;
 
 			var nodeSearch = ndm.getNodeByID(nodeID);
-			if (nodeSearch.stNode != null) {
+			if (nodeSearch.stNode !== null) {
 				nodeSearch.stNode.socket.emit(ndm.CONSTANTS.Messages.ShutDownNode); // Emit message ShutDownNode
 			}
 		}
@@ -250,7 +250,7 @@ var NodesManager = function () {
 			var ndm = this;
 
 			var nodeSearch = ndm.getNodeByID(data.node.config.nodeID);
-			if (nodeSearch.stNode != null && nodeSearch.stNode.state == ndm.CONSTANTS.States.Ready) {
+			if (nodeSearch.stNode !== null && nodeSearch.stNode.state === ndm.CONSTANTS.States.Ready) {
 
 				// Emit message BadNodeConfig
 				stNode.socket.emit(ndm.CONSTANTS.Messages.BadNodeConfig, {
@@ -274,7 +274,7 @@ var NodesManager = function () {
 
 			var nodeSearh = ndm.getNodeBySocket(data.node.socket);
 
-			if (nodeSearh.stNode != null) {
+			if (nodeSearh.stNode !== null) {
 				ndm.nodeList.splice(nodeSearh.position, 1);
 				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeRemoved); // Emit event NodeRemoved
 			}

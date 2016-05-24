@@ -106,7 +106,7 @@ var Sensor = function () {
 
 						var stSensor = this;
 
-						if (stSensor.state != stSensor.CONSTANTS.States.State_Config) {
+						if (stSensor.state !== stSensor.CONSTANTS.States.State_Config) {
 								throw "Bad state.";
 						}
 				}
@@ -202,7 +202,7 @@ var SensorsManager = function () {
 								stSensors.sensors.forEach(function (sensor, _i, _sensors) {
 
 										var sensorSearch = smngr.getSensorBy_sysID(sensor.config._sysID);
-										if (sensorSearch.stSensor != null) {
+										if (sensorSearch.stSensor !== null) {
 												smngr.sensorList.splice(sensorSearch.position, 1);
 										}
 								});
@@ -220,11 +220,27 @@ var SensorsManager = function () {
 
 						// Map message SensorStarted
 						stNode.socket.on(smngr.CONSTANTS.Messages.SensorStarted, function (msg) {
+
+								var stSensors = smngr.getSensorBy_sysID(stNode.config.nodeID + msg.sensorID);
+								if (stSensors.stSensor === null) {
+										throw "Sensor not found.";
+								}
+
+								var stSensor = stSensors.stSensor;
+
 								stSensor.eventEmitter.emit(SensorsManager_CONSTANTS.Events.SensorStarted);
 						});
 
 						// Map message SensorStopped
 						stNode.socket.on(smngr.CONSTANTS.Messages.SensorStopped, function (msg) {
+
+								var stSensors = smngr.getSensorBy_sysID(stNode.config.nodeID + msg.sensorID);
+								if (stSensors.stSensor === null) {
+										throw "Sensor not found.";
+								}
+
+								var stSensor = stSensors.stSensor;
+
 								stSensor.eventEmitter.emit(SensorsManager_CONSTANTS.Events.SensorStopped);
 						});
 
@@ -313,7 +329,7 @@ var SensorsManager = function () {
 						_i = smngr.sensorList.map(function (x) {
 								return x.config._sysID;
 						}).indexOf(sensorID);
-						if (_i != -1) {
+						if (_i !== -1) {
 								sensor = smngr.sensorList[_i];
 						}
 
@@ -342,7 +358,7 @@ var SensorsManager = function () {
 
 						var sensors = smngr.sensorList.filter(function (sensor, _i, _sensors) {
 
-								if (sensor.config._refSTNodeID == nodeID) {
+								if (sensor.config._refSTNodeID === nodeID) {
 										return true;
 								}
 						});
@@ -369,7 +385,7 @@ var SensorsManager = function () {
 
 						var sensorsSearch = smngr.getSensorsByNode(nodeID);
 
-						if (sensorsSearch.sensors != null) {
+						if (sensorsSearch.sensors !== null) {
 								console.log(' <·> Emit message'); // TODO REMOVE DEBUG LOG
 								sensorsSearch.sensors[0].config._controlSocket.emit(smngr.CONSTANTS.Messages.TurnOffSensors);
 						} else {
@@ -462,7 +478,7 @@ var SensorsManager = function () {
 						try {
 
 								var sensorSearch = smngr.getSensorBy_sysID(sensor_sysID);
-								if (sensorSearch.stSensor == null) {
+								if (sensorSearch.stSensor === null) {
 										throw "Sensor not found";
 								}
 
@@ -504,7 +520,7 @@ var SensorsManager = function () {
 						try {
 
 								var sensorSearch = smngr.getSensorBy_sysID(sensor_sysID);
-								if (sensorSearch.stSensor == null) {
+								if (sensorSearch.stSensor === null) {
 										throw "Sensor not found";
 								}
 

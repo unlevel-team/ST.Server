@@ -17,8 +17,6 @@
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ServerConfiguration = require('./ServerConfiguration.js');
@@ -28,13 +26,12 @@ var NodesManager = require('./NodesManager.js');
 var SensorsManager = require('./SensorsManager.js');
 var ActuatorsManager = require('./ActuatorsManager.js');
 
-var NodesNetManager = require('./NodesNetManager.js');
-var NodesNetService = require('./NodesNetService.js').NodesNetService;
+var NodesNetManager = require('st.network').Services.NodesNetManager;
+var NodesNetService = require('st.network').Services.NodesNetService;
 
 var ServerControlService = require('./ServerControlService.js');
 
 var COMSystem = require('st.network').COMSystem;
-//let COMSystem = require('../stNetwork/COMSystem.js').COMSystem;
 
 var readline = require('readline');
 
@@ -96,7 +93,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.serverConfiguration != null) {
+			if (stServer.serverConfiguration !== null) {
 				throw 'Server configuration is loaded.';
 			}
 
@@ -107,7 +104,7 @@ var STServer = function () {
 
 			stServer.serverConfiguration.readFile();
 
-			if (stServer.serverConfiguration.config == null) {
+			if (stServer.serverConfiguration.config === null) {
 
 				console.log('Error in configuration'); // TODO REMOVE DEBUG LOG
 
@@ -131,7 +128,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.nodesManager != null) {
+			if (stServer.nodesManager !== null) {
 				throw 'Nodes manager initialized.';
 			}
 
@@ -167,7 +164,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.nodesControlService != null) {
+			if (stServer.nodesControlService !== null) {
 				throw 'Nodes Control Service initialized.';
 			}
 
@@ -224,7 +221,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.nodesNetManager != null) {
+			if (stServer.nodesNetManager !== null) {
 				throw 'Nodes net manager initialized.';
 			}
 
@@ -243,7 +240,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.nodesNetService != null) {
+			if (stServer.nodesNetService !== null) {
 				throw 'Nodes net service initialized.';
 			}
 
@@ -263,7 +260,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.comSYS != null) {
+			if (stServer.comSYS !== undefined && stServer.comSYS !== null) {
 				throw 'Server COM System initialized.';
 			}
 
@@ -271,20 +268,22 @@ var STServer = function () {
 
 			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
 			// COM System
-			var comSYS_Config = _defineProperty({
+			var comSYS_Config = {
 				"controlChannel": null,
 				"role": "Server",
 				"nodesManager": stServer.nodesManager,
 				"nodesNetManager": stServer.nodesNetManager,
 				"sensorManager": stServer.sensorsManager,
 				"actuatorsManager": stServer.actuatorsManager
-			}, 'nodesNetManager', stServer.nodesNetManager);
+
+			};
 
 			stServer.comSYS = COMSystem.getCOMSystem(comSYS_Config);
 
 			try {
 				stServer.comSYS.initialize();
 			} catch (e) {
+
 				console.log('<EEE> ST Server.init_ServerCOMSystem'); // TODO REMOVE DEBUG LOG
 				console.log(' <···> ' + e); // TODO REMOVE DEBUG LOG
 				stServer._byebye();
@@ -303,7 +302,7 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.serverControlService != null) {
+			if (stServer.serverControlService !== null) {
 				throw 'Server Control Service initialized.';
 			}
 
@@ -333,7 +332,7 @@ var STServer = function () {
 			} catch (e) {
 				// TODO: handle exception
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> ' + e.message); // TODO REMOVE DEBUG LOG
+				console.log(' <···> ' + e); // TODO REMOVE DEBUG LOG
 			}
 			//-------------------------------------------------------------------------------|/\|---
 		}
@@ -365,12 +364,13 @@ var STServer = function () {
 
 			var stServer = this;
 
-			if (stServer.miniCLI != null) {
+			if (stServer.miniCLI !== undefined && stServer.miniCLI !== null) {
 				throw 'Mini CLI initialized.';
 			}
 
 			stServer.miniCLI = readline.createInterface(process.stdin, process.stdout);
-			stServer.miniCLI.setPrompt('STServer> ');
+			stServer.miniCLI.setPrompt('ST.Server> ');
+
 			stServer.miniCLI.prompt();
 
 			stServer.miniCLI.on('line', function (line) {
@@ -403,7 +403,7 @@ var STServer = function () {
 						break;
 
 					default:
-						if (line_ != '') {
+						if (line_ !== '') {
 							console.log('>???> Say what? I might have heard `' + line_ + '`');
 						}
 						break;

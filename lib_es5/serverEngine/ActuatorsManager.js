@@ -103,7 +103,7 @@ var Actuator = function () {
 
 			var stActuator = this;
 
-			if (stActuator.state != stActuator.CONSTANTS.States.State_Config) {
+			if (stActuator.state !== stActuator.CONSTANTS.States.State_Config) {
 				throw "Bad state.";
 			}
 
@@ -212,7 +212,7 @@ var ActuatorsManager = function () {
 				stActuators.actuators.forEach(function (actuator, _i, _actuators) {
 
 					var actuatorSearch = amngr.getActuatorBy_sysID(actuator.config._sysID);
-					if (actuatorSearch.stActuator != null) {
+					if (actuatorSearch.stActuator !== null) {
 						amngr.actuatorsList.splice(actuatorSearch.position, 1);
 					}
 				});
@@ -313,7 +313,7 @@ var ActuatorsManager = function () {
 			var _i = 0;
 
 			for (_i = 0; _i < amngr.actuatorsList.length; _i++) {
-				if (amngr.actuatorsList[_i].config._sysID == actuatorID) {
+				if (amngr.actuatorsList[_i].config._sysID === actuatorID) {
 					actuator = amngr.actuatorsList[_i];
 					break;
 				}
@@ -337,7 +337,7 @@ var ActuatorsManager = function () {
 
 			var actuators = amngr.actuatorsList.filter(function (actuator, _i, _actuators) {
 
-				if (actuator.config._refSTNodeID == nodeID) {
+				if (actuator.config._refSTNodeID === nodeID) {
 					return true;
 				}
 			});
@@ -364,7 +364,7 @@ var ActuatorsManager = function () {
 
 			var actuatorsSearch = amngr.getActuatorsByNode(nodeID);
 
-			if (actuatorsSearch.actuators != null) {
+			if (actuatorsSearch.actuators !== null) {
 				console.log(' <·> Emit message'); // TODO REMOVE DEBUG LOG
 				actuatorsSearch.actuators[0].config._controlSocket.emit(amngr.CONSTANTS.Messages.TurnOffActuators);
 			} else {
@@ -385,7 +385,7 @@ var ActuatorsManager = function () {
 
 			console.log('<*> ST ActuatorsManager.getOptionsOfActuator'); // TODO REMOVE DEBUG LOG
 
-			controlSocket.emit(smngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": act.config.actuatorID }); // Emit message getActuatorOptions
+			controlSocket.emit(amngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": act.config.actuatorID }); // Emit message getActuatorOptions
 		}
 
 		/**
@@ -458,7 +458,7 @@ var ActuatorsManager = function () {
 			try {
 
 				var actuatorSearch = amngr.getActuatorBy_sysID(actuator_sysID);
-				if (actuatorSearch.stActuator == null) {
+				if (actuatorSearch.stActuator === null) {
 					throw "Sensor not found";
 				}
 
@@ -500,7 +500,7 @@ var ActuatorsManager = function () {
 			try {
 
 				var actuatorSearch = amngr.getActuatorBy_sysID(actuator_sysID);
-				if (actuatorSearch.stActuator == null) {
+				if (actuatorSearch.stActuator === null) {
 					throw "Actuator not found";
 				}
 

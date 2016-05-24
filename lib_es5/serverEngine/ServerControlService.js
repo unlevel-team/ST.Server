@@ -22,7 +22,8 @@ var express = require('express');
 var SCS_RouteSensors = require('./scs_routes/SCS_RouteSensors.js');
 var SCS_RouteActuators = require('./scs_routes/SCS_RouteActuators.js');
 var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
-var SCS_RouteNet = require('./scs_routes/SCS_RouteNet.js');
+
+var SCS_RouteNet = require('st.network').SCS_RouteNet;
 
 /**
  * ServerControlService CONSTANTS
@@ -89,7 +90,7 @@ var ServerControlService = function () {
 
 			var scs = this;
 
-			if (scs.server != null) {
+			if (scs.server !== null) {
 				throw "Server is running";
 			}
 
@@ -174,17 +175,19 @@ var ServerControlService = function () {
 		key: 'stopService',
 		value: function stopService() {
 
-			if (this.server == null) {
+			var scs = this;
+
+			if (scs.server === null) {
 				throw "Server not running";
 			}
 
-			if (this.state == this.CONSTANTS.States.Running) {
-				this.serverSocket.close();
+			if (scs.state === scs.CONSTANTS.States.Running) {
+				scs.serverSocket.close();
 			}
 
-			this.eventEmitter.emit(this.CONSTANTS.Events.ServerClosed);
-			this.server = null;
-			this.serverSocket = null;
+			scs.eventEmitter.emit(scs.CONSTANTS.Events.ServerClosed);
+			scs.server = null;
+			scs.serverSocket = null;
 		}
 	}]);
 

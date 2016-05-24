@@ -17,7 +17,6 @@ var EventEmitter = require('events').EventEmitter;
 var portscanner = require('portscanner');
 
 var DataChannel = require('st.network').DataChannel;
-//let DataChannel = require('../stNetwork/DataChannel.js').DataChannel;
 
 /**
  * NodesControlService CONSTANTS
@@ -81,7 +80,7 @@ var NodesControlService = function () {
 
 			var ncs = this;
 
-			if (ncs.server != null) {
+			if (ncs.server !== null) {
 				throw "Server is running";
 			}
 
@@ -156,11 +155,11 @@ var NodesControlService = function () {
 
 			var ncs = this;
 
-			if (ncs.server == null) {
+			if (ncs.server === null) {
 				throw "Server not running";
 			}
 
-			if (ncs.state == ncs.CONSTANTS.States.Running) {
+			if (ncs.state === ncs.CONSTANTS.States.Running) {
 				ncs.server.close();
 			}
 

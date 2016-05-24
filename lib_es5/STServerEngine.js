@@ -9,7 +9,7 @@
 // Gulp+Babel tricks · · - - · · · - - · \/ · ·
 var devMode = false;
 
-if (!process.argv[2] || process.argv[2] != 'dev') {
+if (!process.argv[2] || process.argv[2] !== 'dev') {
 
 	var gulp_babelTricks = require('./toES5.js');
 	gulp_babelTricks.source_map_support_Install();
@@ -38,11 +38,28 @@ try {
 	stServer.init_NodesNetManager();
 	stServer.init_NodesNetService();
 
-	stServer.init_ServerCOMSystem();
+	try {
+		stServer.init_ServerCOMSystem();
+	} catch (e) {
+		// TODO: handle exception
+		throw "Cannot start ServerCOMSystem" + e;
+	}
 
-	stServer.init_ServerControlService();
-	stServer.init_MiniCLI();
+	try {
+		stServer.init_ServerControlService();
+	} catch (e) {
+		// TODO: handle exception
+		throw "Cannot start ServerControlService" + e;
+	}
+
+	try {
+		stServer.init_MiniCLI();
+	} catch (e) {
+		// TODO: handle exception
+		throw "Cannot start miniCLI" + e;
+	}
 } catch (e) {
+
 	// TODO: handle exception
 	console.log("Something happens.");
 	console.log(e);
