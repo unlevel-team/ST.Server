@@ -160,9 +160,6 @@ var ServerControlService = function () {
 
 			scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
 			scs.server.use('/Net', scs.routes_Net.expressRoute);
-
-			//		scs.routes_NetNodes = new SCS_RouteNetNodes(scs.stServer.nodesManager, scs.stServer.nodesNetManager);
-			//		scs.server.use('/Net/Nodes', scs.routes_NetNodes.expressRoute);
 		}
 
 		/**

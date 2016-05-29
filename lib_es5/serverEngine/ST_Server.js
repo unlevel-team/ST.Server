@@ -72,11 +72,11 @@ var STServer = function () {
 
 			stServer.loadConfig();
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Sensors Manager
 			stServer.sensorsManager = new SensorsManager();
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Actuators Manager
 			stServer.actuatorsManager = new ActuatorsManager();
 
@@ -97,7 +97,7 @@ var STServer = function () {
 				throw 'Server configuration is loaded.';
 			}
 
-			// --- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			// --- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Server configuration
 			// -------------------------------------------------------------------------------|\/|---
 			stServer.serverConfiguration = new ServerConfiguration();
@@ -111,8 +111,8 @@ var STServer = function () {
 				process.exit(0);
 				//			return -1;
 			}
-			console.log('<···> ST Server'); // TODO REMOVE DEBUG LOG
-			console.log(' <···> ServerConfiguration'); // TODO REMOVE DEBUG LOG
+			console.log('<*> ST Server'); // TODO REMOVE DEBUG LOG
+			console.log(' <~~~> ServerConfiguration'); // TODO REMOVE DEBUG LOG
 			console.log(stServer.serverConfiguration.config); // TODO REMOVE DEBUG LOG
 
 			//-------------------------------------------------------------------------------|/\|---
@@ -132,15 +132,15 @@ var STServer = function () {
 				throw 'Nodes manager initialized.';
 			}
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes Manager
 			//-------------------------------------------------------------------------------|\/|---
 			stServer.nodesManager = new NodesManager();
 
 			// Map event NodeAdded
 			stServer.nodesManager.eventEmitter.on(stServer.nodesManager.CONSTANTS.Events.NodeAdded, function (data) {
-				console.log('<···> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Events.NodeAdded'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Events.NodeAdded'); // TODO REMOVE DEBUG LOG
 
 				stServer.sensorsManager.addSensorsFromNode(data.node); // bind Node to Sensors manager
 				stServer.actuatorsManager.addActuatorsFromNode(data.node); // bind Node to Actuators manager
@@ -148,8 +148,8 @@ var STServer = function () {
 
 			// Map event NodeRemoved
 			stServer.nodesManager.eventEmitter.on(stServer.nodesManager.CONSTANTS.Events.NodeRemoved, function (data) {
-				console.log('<···> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Events.NodeRemoved'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesManager'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Events.NodeRemoved'); // TODO REMOVE DEBUG LOG
 			});
 			//-------------------------------------------------------------------------------|/\|---
 		}
@@ -168,7 +168,7 @@ var STServer = function () {
 				throw 'Nodes Control Service initialized.';
 			}
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes control Service
 			//-------------------------------------------------------------------------------|\/|---
 
@@ -176,30 +176,30 @@ var STServer = function () {
 
 			stServer.nodesControlService.eventEmitter.on(stServer.nodesControlService.CONSTANTS.Events.ConfigError, function (data) {
 				console.log('EEE> ST Server.ConfigError'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Configuration error.'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Configuration error.'); // TODO REMOVE DEBUG LOG
 				stServer._byebye();
 			});
 
 			stServer.nodesControlService.eventEmitter.on(stServer.nodesControlService.CONSTANTS.Events.ServerListening, function (data) {
-				console.log('<···> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Server Listening'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Server Listening'); // TODO REMOVE DEBUG LOG
 			});
 
 			stServer.nodesControlService.eventEmitter.on(stServer.nodesControlService.CONSTANTS.Events.ServerClosed, function (data) {
-				console.log('<···> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Server Closed'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Server Closed'); // TODO REMOVE DEBUG LOG
 			});
 
 			stServer.nodesControlService.eventEmitter.on(stServer.nodesControlService.CONSTANTS.Events.NodeConnected, function (data) {
-				console.log('<···> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Events.NodeConnected'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Events.NodeConnected'); // TODO REMOVE DEBUG LOG
 
 				stServer.nodesManager.addNode(null, data.socket);
 			});
 
 			stServer.nodesControlService.eventEmitter.on(stServer.nodesControlService.CONSTANTS.Events.NodeDisconnected, function (data) {
-				console.log('<···> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Events.NodeDisconnected'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.nodesControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Events.NodeDisconnected'); // TODO REMOVE DEBUG LOG
 			});
 
 			try {
@@ -225,7 +225,7 @@ var STServer = function () {
 				throw 'Nodes net manager initialized.';
 			}
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes net Manager
 			stServer.nodesNetManager = new NodesNetManager();
 		}
@@ -244,7 +244,7 @@ var STServer = function () {
 				throw 'Nodes net service initialized.';
 			}
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes net service
 			stServer.nodesNetService = new NodesNetService(stServer.nodesManager, stServer.nodesNetManager);
 			stServer.nodesNetService.initialize();
@@ -266,7 +266,7 @@ var STServer = function () {
 
 			//		let socket = stServer.nodesManager.socket;
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// COM System
 			var comSYS_Config = {
 				"controlChannel": null,
@@ -285,7 +285,7 @@ var STServer = function () {
 			} catch (e) {
 
 				console.log('<EEE> ST Server.init_ServerCOMSystem'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> ' + e); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> ' + e); // TODO REMOVE DEBUG LOG
 				stServer._byebye();
 			}
 		}
@@ -306,25 +306,25 @@ var STServer = function () {
 				throw 'Server Control Service initialized.';
 			}
 
-			//--- ¨¨ --- ¨¨ --- ¨¨ --- ¨¨ ---
+			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Server control Service
 			//-------------------------------------------------------------------------------|\/|---
 
 			stServer.serverControlService = new ServerControlService(this);
 
 			stServer.serverControlService.eventEmitter.on(stServer.serverControlService.CONSTANTS.Events.ServerListening, function (data) {
-				console.log('<···> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Server Listening'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Server Listening'); // TODO REMOVE DEBUG LOG
 			});
 
 			stServer.serverControlService.eventEmitter.on(stServer.serverControlService.CONSTANTS.Events.ServerClosed, function (data) {
-				console.log('<···> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Server Closed'); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Server Closed'); // TODO REMOVE DEBUG LOG
 			});
 
 			stServer.serverControlService.eventEmitter.on(stServer.serverControlService.CONSTANTS.Events.ConfigError, function (data) {
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> Config Error'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> Config Error'); // TODO REMOVE DEBUG LOG
 			});
 
 			try {
@@ -332,7 +332,7 @@ var STServer = function () {
 			} catch (e) {
 				// TODO: handle exception
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> ' + e); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> ' + e); // TODO REMOVE DEBUG LOG
 			}
 			//-------------------------------------------------------------------------------|/\|---
 		}

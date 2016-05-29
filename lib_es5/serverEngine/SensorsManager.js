@@ -193,7 +193,7 @@ var SensorsManager = function () {
 						var smngr = this;
 						var _stNode = stNode;
 
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|···
+						// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |\/|~~~
 						// Event NodeDisconnected
 						stNode.eventEmitter.on(stNode.CONSTANTS.Events.NodeDisconnected, function (data) {
 
@@ -207,7 +207,7 @@ var SensorsManager = function () {
 										}
 								});
 						});
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|···
+						// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |/\|~~~
 
 						// Map event disconnect
 						stNode.socket.on("disconnect", function () {
@@ -228,6 +228,7 @@ var SensorsManager = function () {
 
 								var stSensor = stSensors.stSensor;
 
+								// Emit event SensorStarted
 								stSensor.eventEmitter.emit(SensorsManager_CONSTANTS.Events.SensorStarted);
 						});
 
@@ -241,6 +242,7 @@ var SensorsManager = function () {
 
 								var stSensor = stSensors.stSensor;
 
+								// Emit event SensorStopped
 								stSensor.eventEmitter.emit(SensorsManager_CONSTANTS.Events.SensorStopped);
 						});
 
@@ -288,29 +290,28 @@ var SensorsManager = function () {
 
 						var controlSocket = stSensor.config._controlSocket;
 
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|···
 						// Event SensorStarted
 						stSensor.eventEmitter.on(SensorsManager_CONSTANTS.Events.SensorStarted, function () {
 
-								console.log('<···> ST SensorsManager.SensorStarted'); // TODO REMOVE DEBUG LOG
-								console.log(' <···> ' + stSensor.config.id); // TODO REMOVE DEBUG LOG
+								console.log('<*> ST SensorsManager.SensorStarted'); // TODO REMOVE DEBUG LOG
+								console.log(' <~~~> ' + stSensor.config.id); // TODO REMOVE DEBUG LOG
 						});
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|···
+						// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |/\|~~~
 
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|···
+						// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |\/|~~~
 						// Event SensorStopped
 						stSensor.eventEmitter.on(SensorsManager_CONSTANTS.Events.SensorStopped, function () {
 
-								console.log('<···> ST SensorsManager.SensorStopped'); // TODO REMOVE DEBUG LOG
-								console.log(' <···> ' + stSensor.config.id); // TODO REMOVE DEBUG LOG
+								console.log('<*> ST SensorsManager.SensorStopped'); // TODO REMOVE DEBUG LOG
+								console.log(' <~~~> ' + stSensor.config.id); // TODO REMOVE DEBUG LOG
 						});
-						// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|···
+						// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |/\|~~~
 
 						stSensor.initialize();
 						smngr.sensorList.push(stSensor);
 
 						// Emit message getSensorOptions
-						controlSocket.emit(smngr.CONSTANTS.Messages.getSensorOptions, { "sensorID": stSensor.config.sensorID }); // Emit message getSensorOptions
+						controlSocket.emit(smngr.CONSTANTS.Messages.getSensorOptions, { "sensorID": stSensor.config.sensorID });
 				}
 
 				/**
@@ -386,10 +387,13 @@ var SensorsManager = function () {
 						var sensorsSearch = smngr.getSensorsByNode(nodeID);
 
 						if (sensorsSearch.sensors !== null) {
-								console.log(' <·> Emit message'); // TODO REMOVE DEBUG LOG
+
+								console.log(' <~> Emit message'); // TODO REMOVE DEBUG LOG
+
+								// Emit message TurnOffSensors
 								sensorsSearch.sensors[0].config._controlSocket.emit(smngr.CONSTANTS.Messages.TurnOffSensors);
 						} else {
-								console.log(' <·> Node not found!!!'); // TODO REMOVE DEBUG LOG
+								console.log(' <~> Node not found!!!'); // TODO REMOVE DEBUG LOG
 						}
 				}
 
@@ -406,7 +410,8 @@ var SensorsManager = function () {
 
 						console.log('<*> ST SensorsManager.getOptionsOfSensor'); // TODO REMOVE DEBUG LOG
 
-						controlSocket.emit(smngr.CONSTANTS.Messages.getSensorOptions, { "sensorID": sns.config.sensorID }); // Emit message getSensorOptions
+						// Emit message getSensorOptions
+						controlSocket.emit(smngr.CONSTANTS.Messages.getSensorOptions, { "sensorID": sns.config.sensorID });
 				}
 
 				/**
@@ -423,7 +428,8 @@ var SensorsManager = function () {
 						console.log('<*> ST SensorsManager.setOptionsOfSensor'); // TODO REMOVE DEBUG LOG
 						console.log(options); // TODO REMOVE DEBUG LOG
 
-						controlSocket.emit(smngr.CONSTANTS.Messages.setSensorOptions, { "sensorID": sns.config.sensorID, "options": options }); // Emit message setSensorOptions
+						// Emit message setSensorOptions
+						controlSocket.emit(smngr.CONSTANTS.Messages.setSensorOptions, { "sensorID": sns.config.sensorID, "options": options });
 				}
 
 				/**

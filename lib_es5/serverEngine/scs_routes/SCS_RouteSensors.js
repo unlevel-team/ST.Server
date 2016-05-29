@@ -102,7 +102,7 @@ var SCS_RouteSensors = function () {
 				try {
 
 					var sensorSearch = smngr.getSensorBy_sysID(sensorID);
-					if (sensorSearch.stSensor == null) {
+					if (sensorSearch.stSensor === null) {
 						throw "Sensor not found";
 					}
 
@@ -140,7 +140,7 @@ var SCS_RouteSensors = function () {
 				try {
 
 					var sensorSearch = smngr.getSensorBy_sysID(sensorID);
-					if (sensorSearch.stSensor == null) {
+					if (sensorSearch.stSensor === null) {
 						throw "Sensor not found";
 					}
 
@@ -176,10 +176,10 @@ var SCS_RouteSensors = function () {
 				try {
 
 					var sensorSearch = smngr.getSensorBy_sysID(sensorID);
-					if (sensorSearch.stSensor != null) {
+					if (sensorSearch.stSensor !== null) {
 						sensorSearch.stSensor.start().then(function (value) {
 							console.log(value); // TODO REMOVE DEBUG LOG
-							console.log(' <·> Sensor Started'); // TODO REMOVE DEBUG LOG
+							console.log(' <*> Sensor Started'); // TODO REMOVE DEBUG LOG
 						}, function (reason) {});
 					} else {
 						_response.response = 'Sensor not found.';
@@ -213,10 +213,10 @@ var SCS_RouteSensors = function () {
 				try {
 
 					var sensorSearch = smngr.getSensorBy_sysID(sensorID);
-					if (sensorSearch.stSensor != null) {
+					if (sensorSearch.stSensor !== null) {
 						sensorSearch.stSensor.stop().then(function (value) {
 							console.log(value); // TODO REMOVE DEBUG LOG
-							console.log(' <·> Sensor Stopped'); // TODO REMOVE DEBUG LOG
+							console.log(' <*> Sensor Stopped'); // TODO REMOVE DEBUG LOG
 						}, function (reason) {});
 					} else {
 						_response.response = 'Sensor not found.';

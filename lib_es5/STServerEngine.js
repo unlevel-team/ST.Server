@@ -6,7 +6,7 @@
  * starts a STServer
  */
 
-// Gulp+Babel tricks · · - - · · · - - · \/ · ·
+// Gulp+Babel tricks ~ ~ - - ~ ~ ~ - - ~ \/ ~ ~
 var devMode = false;
 
 if (!process.argv[2] || process.argv[2] !== 'dev') {
@@ -19,7 +19,7 @@ if (!process.argv[2] || process.argv[2] !== 'dev') {
 	console.log('Arguments'); // TODO REMOVE DEBUG LOG
 	console.log(process.argv); // TODO REMOVE DEBUG LOG
 }
-// · - - · · · - - · · · - - · · · - - · /\ · ·
+// ~ - - ~ ~ ~ - - ~ ~ ~ - - ~ ~ ~ - - ~ /\ ~ ~
 
 // require our modules
 var STServer = require('./serverEngine/ST_Server.js');

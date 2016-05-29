@@ -203,7 +203,7 @@ var ActuatorsManager = function () {
 			var amngr = this;
 			var _stNode = stNode;
 
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|··· 
+			// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |\/|~~~ 
 			// Event NodeDisconnected
 			stNode.eventEmitter.on(stNode.CONSTANTS.Events.NodeDisconnected, function (data) {
 
@@ -217,7 +217,7 @@ var ActuatorsManager = function () {
 					}
 				});
 			});
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|··· 
+			// ~ ~ ~ ~ ~ ~  # #  ~ ~ ~ ~ ~ ~  ###  ~ ~ ~ ~ ~ ~  # # ~ ~ ~ ~ ~ ~ |/\|~~~ 
 
 			// Map event disconnect
 			stNode.socket.on("disconnect", function () {
@@ -230,12 +230,16 @@ var ActuatorsManager = function () {
 
 			// Map Message ActuatorStarted
 			stNode.socket.on(amngr.CONSTANTS.Messages.ActuatorStarted, function (msg) {
-				amngr.eventEmitter.emit(amngr.CONSTANTS.Events.ActuatorStarted); // Emit event ActuatorStarted
+
+				// Emit event ActuatorStarted
+				amngr.eventEmitter.emit(amngr.CONSTANTS.Events.ActuatorStarted);
 			});
 
 			// Map Message ActuatorStopped
 			stNode.socket.on(amngr.CONSTANTS.Messages.ActuatorStopped, function (msg) {
-				amngr.eventEmitter.emit(amngr.CONSTANTS.Events.ActuatorStopped); // Emit event ActuatorStopped
+
+				// Emit event ActuatorStopped
+				amngr.eventEmitter.emit(amngr.CONSTANTS.Events.ActuatorStopped);
 			});
 
 			// Map Message ActuatorOptions
@@ -259,6 +263,8 @@ var ActuatorsManager = function () {
 			});
 
 			if (stNode.config.numActuators > 0) {
+
+				// Emit message getActuatorsList
 				stNode.socket.emit(amngr.CONSTANTS.Messages.getActuatorsList);
 			}
 		}
@@ -276,28 +282,25 @@ var ActuatorsManager = function () {
 
 			var controlSocket = stActuator.config._controlSocket;
 
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|··· 
 			// Event ActuatorStarted
 			stActuator.eventEmitter.on(ActuatorsManager_CONSTANTS.Events.ActuatorStarted, function () {
 
-				console.log('<···> ST ActuatorsManager.ActuatorStarted'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> ' + stActuator.config.id); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST ActuatorsManager.ActuatorStarted'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> ' + stActuator.config.id); // TODO REMOVE DEBUG LOG
 			});
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|··· 
 
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |\/|··· 
 			// Event ActuatorStopped
 			stActuator.eventEmitter.on(ActuatorsManager_CONSTANTS.Events.ActuatorStopped, function () {
 
-				console.log('<···> ST ActuatorsManager.ActuatorStopped'); // TODO REMOVE DEBUG LOG
-				console.log(' <···> ' + stActuator.config.id); // TODO REMOVE DEBUG LOG
+				console.log('<*> ST ActuatorsManager.ActuatorStopped'); // TODO REMOVE DEBUG LOG
+				console.log(' <~~~> ' + stActuator.config.id); // TODO REMOVE DEBUG LOG
 			});
-			// · · · · · ·  # #  · · · · · ·  ###  · · · · · ·  # # · · · · · · |/\|··· 
 
 			stActuator.initialize();
 			amngr.actuatorsList.push(stActuator);
 
-			controlSocket.emit(amngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": stActuator.config.actuatorID }); // Emit message getActuatorOptions
+			// Emit message getActuatorOptions
+			controlSocket.emit(amngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": stActuator.config.actuatorID });
 		}
 
 		/**
@@ -312,12 +315,19 @@ var ActuatorsManager = function () {
 			var actuator = null;
 			var _i = 0;
 
-			for (_i = 0; _i < amngr.actuatorsList.length; _i++) {
-				if (amngr.actuatorsList[_i].config._sysID === actuatorID) {
-					actuator = amngr.actuatorsList[_i];
-					break;
-				}
+			_i = amngr.actuatorsList.map(function (x) {
+				return x.config._sysID;
+			}).indexOf(actuatorID);
+			if (_i !== -1) {
+				actuator = amngr.actuatorsList[_i];
 			}
+
+			//		for (_i = 0; _i < amngr.actuatorsList.length; _i++) {
+			//			if (amngr.actuatorsList[_i].config._sysID === actuatorID) {
+			//				actuator = amngr.actuatorsList[_i];
+			//				break;
+			//			}
+			//		}
 
 			return {
 				"stActuator": actuator,
@@ -365,10 +375,13 @@ var ActuatorsManager = function () {
 			var actuatorsSearch = amngr.getActuatorsByNode(nodeID);
 
 			if (actuatorsSearch.actuators !== null) {
-				console.log(' <·> Emit message'); // TODO REMOVE DEBUG LOG
+
+				console.log(' <~> Emit message'); // TODO REMOVE DEBUG LOG
+
+				// Emit message TurnOffActuators
 				actuatorsSearch.actuators[0].config._controlSocket.emit(amngr.CONSTANTS.Messages.TurnOffActuators);
 			} else {
-				console.log(' <·> Node not found!!!'); // TODO REMOVE DEBUG LOG
+				console.log(' <~> Node not found!!!'); // TODO REMOVE DEBUG LOG
 			}
 		}
 
@@ -385,7 +398,8 @@ var ActuatorsManager = function () {
 
 			console.log('<*> ST ActuatorsManager.getOptionsOfActuator'); // TODO REMOVE DEBUG LOG
 
-			controlSocket.emit(amngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": act.config.actuatorID }); // Emit message getActuatorOptions
+			// Emit message getActuatorOptions
+			controlSocket.emit(amngr.CONSTANTS.Messages.getActuatorOptions, { "actuatorID": act.config.actuatorID });
 		}
 
 		/**

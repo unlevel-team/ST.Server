@@ -104,7 +104,7 @@ var SCS_RouteActuators = function () {
 				try {
 
 					var actuatorSearch = amngr.getActuatorBy_sysID(actuatorID);
-					if (actuatorSearch.stActuator == null) {
+					if (actuatorSearch.stActuator === null) {
 						throw "Actuator not found";
 					}
 
@@ -142,7 +142,7 @@ var SCS_RouteActuators = function () {
 				try {
 
 					var actuatorSearch = amngr.getActuatorBy_sysID(actuatorID);
-					if (actuatorSearch.stActuator == null) {
+					if (actuatorSearch.stActuator === null) {
 						throw "Actuator not found";
 					}
 
@@ -175,10 +175,10 @@ var SCS_RouteActuators = function () {
 				try {
 
 					var actuatorSearch = routerActuators.actuatorsManager.getActuatorBy_sysID(req.params.actuatorID);
-					if (actuatorSearch.stActuator != null) {
+					if (actuatorSearch.stActuator !== null) {
 						actuatorSearch.stActuator.start().then(function (value) {
 							console.log(value); // TODO REMOVE DEBUG LOG
-							console.log(' <·> Actuator Started'); // TODO REMOVE DEBUG LOG
+							console.log(' <*> Actuator Started'); // TODO REMOVE DEBUG LOG
 						}, function (reason) {});
 					} else {
 						_response.response = 'Actuator not found.';
@@ -209,10 +209,10 @@ var SCS_RouteActuators = function () {
 				try {
 
 					var actuatorSearch = routerActuators.actuatorsManager.getActuatorBy_sysID(req.params.actuatorID);
-					if (actuatorSearch.stActuator != null) {
+					if (actuatorSearch.stActuator !== null) {
 						actuatorSearch.stActuator.stop().then(function (value) {
 							console.log(value); // TODO REMOVE DEBUG LOG
-							console.log(' <·> Actuator Stopped'); // TODO REMOVE DEBUG LOG
+							console.log(' <*> Actuator Stopped'); // TODO REMOVE DEBUG LOG
 						}, function (reason) {
 							console.log(reason); // TODO REMOVE DEBUG LOG
 						});
