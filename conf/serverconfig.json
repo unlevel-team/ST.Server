@@ -3,10 +3,12 @@
 	"typeExtra": "Server",
 	
 	"nodes": {
+		"netLocation": "0.0.0.0",
 		"controlPort": 5673
 	},
 	
 	"server": {
+		"netLocation": "127.0.0.1",
 		"controlPort": 5675
 	}
 
