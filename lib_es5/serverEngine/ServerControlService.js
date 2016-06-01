@@ -108,12 +108,15 @@ var ServerControlService = function () {
 			//		});
 
 			// Checks the status of a single port
-			portscanner.checkPortStatus(scs.config.server.controlPort, '127.0.0.1', function (error, status) {
+			portscanner.checkPortStatus(scs.config.server.controlPort, scs.config.server.netLocation, function (error, status) {
 				// Status is 'open' if currently in use or 'closed' if available
 
 				switch (status) {
 					case 'closed':
-						scs.serverSocket = scs.server.listen(scs.config.server.controlPort);
+
+						scs.serverSocket = scs.server.listen(scs.config.server.controlPort, scs.config.server.netLocation);
+						//				scs.serverSocket = scs.server.listen( scs.config.server.controlPort );
+
 						scs.state = scs.CONSTANTS.States.Running;
 						scs.eventEmitter.emit(scs.CONSTANTS.Events.ServerListening);
 						break;

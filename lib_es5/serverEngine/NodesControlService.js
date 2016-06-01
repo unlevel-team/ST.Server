@@ -15,6 +15,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var EventEmitter = require('events').EventEmitter;
 var portscanner = require('portscanner');
+var http = require('http');
 
 var DataChannel = require('st.network').DataChannel;
 
@@ -108,7 +109,18 @@ var NodesControlService = function () {
 
 				switch (status) {
 					case 'closed':
-						ncs.server.listen(ncs.config.nodes.controlPort);
+
+						if (ncs.config.nodes.netLocation === "0.0.0.0") {
+							ncs.server.listen(ncs.config.nodes.controlPort);
+						} else {
+
+							// Connect socket.IO to any IP...
+							ncs._server = http.createServer();
+							ncs._server.listen(ncs.config.nodes.controlPort, ncs.config.nodes.netLocation);
+
+							ncs.server.listen(ncs._server);
+						}
+
 						ncs.state = ncs.CONSTANTS.States.Running;
 						ncs.eventEmitter.emit(ncs.CONSTANTS.Events.ServerListening); // Emit event ServerListening
 						break;
