@@ -221,9 +221,15 @@ var SensorsManager = function () {
 						// Map message SensorStarted
 						stNode.socket.on(smngr.CONSTANTS.Messages.SensorStarted, function (msg) {
 
-								var stSensors = smngr.getSensorBy_sysID(stNode.config.nodeID + msg.sensorID);
+								var sysID = stNode.config.nodeID + '.' + msg.sensorID;
+								var stSensors = smngr.getSensorBy_sysID(sysID);
+
 								if (stSensors.stSensor === null) {
-										throw "Sensor not found.";
+										//				throw "Sensor not found.";
+										console.log('<EEE> ST SensorsManager.SensorStarted'); // TODO REMOVE DEBUG LOG
+										console.log(' <~~~> Sensor not found: ' + sysID); // TODO REMOVE DEBUG LOG
+
+										return;
 								}
 
 								var stSensor = stSensors.stSensor;
@@ -235,9 +241,15 @@ var SensorsManager = function () {
 						// Map message SensorStopped
 						stNode.socket.on(smngr.CONSTANTS.Messages.SensorStopped, function (msg) {
 
-								var stSensors = smngr.getSensorBy_sysID(stNode.config.nodeID + msg.sensorID);
+								var sysID = stNode.config.nodeID + '.' + msg.sensorID;
+								var stSensors = smngr.getSensorBy_sysID(sysID);
+
 								if (stSensors.stSensor === null) {
-										throw "Sensor not found.";
+										//				throw "Sensor not found.";
+										console.log('<EEE> ST SensorsManager.SensorStopped'); // TODO REMOVE DEBUG LOG
+										console.log(' <~~~> Sensor not found: ' + sysID); // TODO REMOVE DEBUG LOG
+
+										return;
 								}
 
 								var stSensor = stSensors.stSensor;
@@ -274,6 +286,9 @@ var SensorsManager = function () {
 								// Emit message getSensorsList
 								stNode.socket.emit(smngr.CONSTANTS.Messages.getSensorsList);
 						}
+
+						console.log('<*> ST SensorsManager.addSensorsFromNode'); // TODO REMOVE DEBUG LOG
+						console.log(stNode.config); // TODO REMOVE DEBUG LOG
 				}
 
 				/**
@@ -443,6 +458,9 @@ var SensorsManager = function () {
 						var smngr = this;
 						var controlSocket = stNode.socket;
 						var data = options.data;
+
+						console.log('<*> ST SensorsManager._msg_SensorsList'); // TODO REMOVE DEBUG LOG
+						console.log(msg); // TODO REMOVE DEBUG LOG
 
 						if (data.numSensors > 0) {
 
