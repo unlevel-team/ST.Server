@@ -67,7 +67,8 @@ var Node = function () {
 
 		if (this.config === undefined || this.config === null) {
 			this.state = this.CONSTANTS.States.Setup;
-			this.socket.emit(this.CONSTANTS.Messages.getNodeInfo); // Emit message getNodeInfo
+			// Emit message getNodeInfo
+			this.socket.emit(this.CONSTANTS.Messages.getNodeInfo);
 		}
 	}
 
@@ -84,7 +85,8 @@ var Node = function () {
 
 			// Map event disconnect
 			node.socket.on('disconnect', function () {
-				node.eventEmitter.emit(node.CONSTANTS.Events.NodeDisconnected, { "node": node }); // Emit event NodeDisconnected
+				// Emit event NodeDisconnected
+				node.eventEmitter.emit(node.CONSTANTS.Events.NodeDisconnected, { "node": node });
 			});
 		}
 
@@ -257,8 +259,11 @@ var NodesManager = function () {
 					"message": "nodeID duplicated."
 				});
 			} else {
+
 				data.node.state = ndm.CONSTANTS.States.Ready;
-				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeAdded, data); // Emit event NodeAdded
+
+				// Emit event NodeAdded
+				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeAdded, data);
 			}
 		}
 
@@ -274,9 +279,13 @@ var NodesManager = function () {
 
 			var nodeSearh = ndm.getNodeBySocket(data.node.socket);
 
+			var nodeID = stNode.config.nodeID.toString();
+
 			if (nodeSearh.stNode !== null) {
 				ndm.nodeList.splice(nodeSearh.position, 1);
-				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeRemoved); // Emit event NodeRemoved
+
+				// Emit event NodeRemoved
+				ndm.eventEmitter.emit(ndm.CONSTANTS.Events.NodeRemoved, { "nodeID": nodeID });
 			}
 		}
 	}]);

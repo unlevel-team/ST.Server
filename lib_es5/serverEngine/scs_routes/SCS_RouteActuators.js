@@ -141,6 +141,10 @@ var SCS_RouteActuators = function () {
 
 				try {
 
+					if (options === undefined) {
+						throw "Options are required.";
+					}
+
 					var actuatorSearch = amngr.getActuatorBy_sysID(actuatorID);
 					if (actuatorSearch.stActuator === null) {
 						throw "Actuator not found";

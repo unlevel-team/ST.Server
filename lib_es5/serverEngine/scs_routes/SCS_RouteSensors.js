@@ -123,12 +123,12 @@ var SCS_RouteSensors = function () {
 			// Set Sensor options
 			routerSensors.expressRoute.post('/:sensorID/options', jsonParser, function (req, res) {
 
-				console.log(' <*> SeverControlService Set Sensor Options'); // TODO REMOVE DEBUG LOG
-
 				var smngr = routerSensors.sensorsManager;
 				var sensorID = req.params.sensorID;
 
 				var options = req.body.options;
+
+				console.log(' <*> SeverControlService Set Sensor Options'); // TODO REMOVE DEBUG LOG
 
 				var _response = {
 					"context": "ST Server Sensors",
@@ -138,6 +138,10 @@ var SCS_RouteSensors = function () {
 				};
 
 				try {
+
+					if (options === undefined) {
+						throw "Options are required.";
+					}
 
 					var sensorSearch = smngr.getSensorBy_sysID(sensorID);
 					if (sensorSearch.stSensor === null) {

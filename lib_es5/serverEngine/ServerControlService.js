@@ -23,7 +23,7 @@ var SCS_RouteSensors = require('./scs_routes/SCS_RouteSensors.js');
 var SCS_RouteActuators = require('./scs_routes/SCS_RouteActuators.js');
 var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
 
-var SCS_RouteNet = require('st.network').SCS_RouteNet;
+var SCS_RouteNet = require('st.network').get_SCS_RouteNet();
 
 /**
  * ServerControlService CONSTANTS

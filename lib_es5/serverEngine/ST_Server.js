@@ -26,12 +26,13 @@ var NodesManager = require('./NodesManager.js');
 var SensorsManager = require('./SensorsManager.js');
 var ActuatorsManager = require('./ActuatorsManager.js');
 
-var NodesNetManager = require('st.network').Services.NodesNetManager;
-var NodesNetService = require('st.network').Services.NodesNetService;
+var Services = require('st.network').get_Services();
+var NodesNetManager = Services.get_NodesNetManager();
+var NodesNetService = Services.get_NodesNetService();
 
 var ServerControlService = require('./ServerControlService.js');
 
-var COMSystem = require('st.network').COMSystem;
+var COMSystem = require('st.network').get_COMSystem_Lib();
 
 var readline = require('readline');
 
@@ -325,6 +326,7 @@ var STServer = function () {
 			stServer.serverControlService.eventEmitter.on(stServer.serverControlService.CONSTANTS.Events.ConfigError, function (data) {
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
 				console.log(' <~~~> Config Error'); // TODO REMOVE DEBUG LOG
+				console.log(data); // TODO REMOVE DEBUG LOG
 			});
 
 			try {
@@ -332,7 +334,7 @@ var STServer = function () {
 			} catch (e) {
 				// TODO: handle exception
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
-				console.log(' <~~~> ' + e); // TODO REMOVE DEBUG LOG
+				console.log(e); // TODO REMOVE DEBUG LOG
 			}
 			//-------------------------------------------------------------------------------|/\|---
 		}
