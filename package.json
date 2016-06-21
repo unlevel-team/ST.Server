@@ -1,6 +1,6 @@
 {
   "name": "st.server",
-  "version": "0.0.1-alpha00-build006",
+  "version": "0.0.1-alpha00-build007",
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
@@ -25,7 +25,8 @@
     "socket.io-client": "~1.4",
     "body-parser" : "~1.15",
     "source-map-support": "*",
-    "st.network": "file:../NLVL_STNetwork/"
+    "st.network": "file:../NLVL_STNetwork/",
+    "st.engines": "file:../NLVL_STEngines/"
 
   },
   "devDependencies": {
