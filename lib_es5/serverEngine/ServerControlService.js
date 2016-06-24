@@ -19,12 +19,6 @@ var EventEmitter = require('events').EventEmitter;
 var portscanner = require('portscanner');
 var express = require('express');
 
-var SCS_RouteSensors = require('./scs_routes/SCS_RouteSensors.js');
-var SCS_RouteActuators = require('./scs_routes/SCS_RouteActuators.js');
-var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
-
-var SCS_RouteNet = require('st.network').get_SCS_RouteNet();
-
 /**
  * ServerControlService CONSTANTS
  */
@@ -50,6 +44,22 @@ var ServerControlService_CONSTANTS = {
 	}
 };
 
+/**
+ * SCS_RouteRef
+ * 
+ * Provides reference to SCS routes
+ * 
+ */
+
+var SCS_RouteRef = function SCS_RouteRef(expressRoute, url) {
+	_classCallCheck(this, SCS_RouteRef);
+
+	var scs_Route = this;
+
+	scs_Route.expressRoute = expressRoute;
+	scs_Route.url = url;
+};
+
 /*
  * ServerControlService
  * 
@@ -57,34 +67,142 @@ var ServerControlService_CONSTANTS = {
  * 
  */
 
+
 var ServerControlService = function () {
 	function ServerControlService(stServer) {
 		_classCallCheck(this, ServerControlService);
 
-		this.stServer = stServer;
-		this.config = stServer.serverConfiguration.config;
-		this.server = null;
-		this.serverSocket = null;
-		this.eventEmitter = new EventEmitter();
+		var scs = this;
 
-		this.CONSTANTS = ServerControlService_CONSTANTS;
+		scs.stServer = stServer;
+		scs.config = stServer.serverConfiguration.config;
+		scs.server = null;
+		scs.serverSocket = null;
+		scs.eventEmitter = new EventEmitter();
 
-		this.state = ServerControlService_CONSTANTS.States.Config;
+		scs.CONSTANTS = ServerControlService_CONSTANTS;
 
-		this.routes_Sensors = null;
-		this.routes_Actuators = null;
-		this.routes_Nodes = null;
-		this.routes_Net = null;
+		scs.state = ServerControlService_CONSTANTS.States.Config;
+
+		scs._scsRoutes = null;
+
+		scs.routes_Nodes = null;
+		scs.routes_Engines = null;
+		scs.routes_Sensors = null;
+		scs.routes_Actuators = null;
+		scs.routes_Net = null;
 	}
 
-	/**
-  * Start service
-  * 
-  * @throws Exceptions
-  */
-
-
 	_createClass(ServerControlService, [{
+		key: 'initialize',
+		value: function initialize() {
+
+			var scs = this;
+
+			scs._scsRoutes = [];
+
+			try {
+				scs._init_Nodes();
+			} catch (e) {
+				// TODO: handle exception
+				throw "Cannont initialize Nodes. " + e;
+			}
+
+			try {
+				scs._init_Engines();
+			} catch (e) {
+				// TODO: handle exception
+				throw "Cannont initialize Engines. " + e;
+			}
+
+			try {
+				scs._init_Net();
+			} catch (e) {
+				// TODO: handle exception
+				throw "Cannont initialize Net. " + e;
+			}
+
+			//		scs._init_Engines__OLD();
+		}
+
+		/**
+   * Initialize control routes 
+   * for nodes
+   */
+
+	}, {
+		key: '_init_Nodes',
+		value: function _init_Nodes() {
+
+			var scs = this;
+
+			var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
+
+			console.log('<~*~> ServerControlService._init_Nodes'); // TODO REMOVE DEBUG LOG
+
+			scs.routes_Nodes = new SCS_RouteNodes(scs.stServer.nodesManager);
+			var scsRoutes_Nodes = new SCS_RouteRef(scs.routes_Nodes.expressRoute, "/Nodes");
+			scs._scsRoutes.push(scsRoutes_Nodes);
+		}
+
+		/**
+   * Initialize control routes 
+   * for Engines
+   */
+
+	}, {
+		key: '_init_Engines',
+		value: function _init_Engines() {
+
+			var scs = this;
+			var stServer = scs.stServer;
+			var ngSYS = stServer.ngSYS;
+
+			console.log('<~*~> ServerControlService._init_Engines'); // TODO REMOVE DEBUG LOG
+
+			try {
+
+				scs.routes_Engines = ngSYS.getSCSRoutes({
+					"ngSYS": ngSYS
+
+				});
+			} catch (e) {
+				// TODO: handle exception
+				throw "Cannot get SCS Routes. " + e;
+			}
+
+			var scsRoutes_Engines = new SCS_RouteRef(scs.routes_Engines.expressRoute, "/ngn");
+			scs._scsRoutes.push(scsRoutes_Engines);
+		}
+
+		/**
+   * Initialize control routes 
+   * for Net
+   */
+
+	}, {
+		key: '_init_Net',
+		value: function _init_Net() {
+
+			var scs = this;
+
+			console.log('<~*~> ServerControlService._init_Net'); // TODO REMOVE DEBUG LOG
+
+			var SCS_RouteNet = require('st.network').get_SCS_RouteNet();
+
+			scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
+
+			var scsRoutes_Net = new SCS_RouteRef(scs.routes_Net.expressRoute, "/Net");
+			scs._scsRoutes.push(scsRoutes_Net);
+		}
+
+		/**
+   * Start service
+   * 
+   * @throws Exceptions
+   */
+
+	}, {
 		key: 'startService',
 		value: function startService() {
 
@@ -98,20 +216,27 @@ var ServerControlService = function () {
 			//		scs.server.use(express.bodyParser());	// Middleware for use JSON on HTTP posts.
 			scs.mapServiceRoutes();
 
-			//		DataChannel.portInUse( scs.config.server.controlPort, function(_portInUse) {
-			//			if (_portInUse) {
-			//				scs.eventEmitter.emit( scs.CONSTANTS.Events.ConfigError );
-			//			} else {
-			//				scs.serverSocket = scs.server.listen( scs.config.server.controlPort );
-			//				scs.eventEmitter.emit( scs.CONSTANTS.Events.ServerListening );
-			//			}
-			//		});
+			console.log('<~*~> ST Server.ServerControlService.startService'); // TODO REMOVE DEBUG LOG
+
+			/*
+    
+   DataChannel.portInUse( scs.config.server.controlPort, function(_portInUse) {
+   	if (_portInUse) {
+   		scs.eventEmitter.emit( scs.CONSTANTS.Events.ConfigError );
+   	} else {
+   		scs.serverSocket = scs.server.listen( scs.config.server.controlPort );
+   		scs.eventEmitter.emit( scs.CONSTANTS.Events.ServerListening );
+   	}
+   });
+   
+   */
 
 			// Checks the status of a single port
 			portscanner.checkPortStatus(scs.config.server.controlPort, scs.config.server.netLocation, function (error, status) {
 				// Status is 'open' if currently in use or 'closed' if available
 
 				switch (status) {
+
 					case 'closed':
 
 						scs.serverSocket = scs.server.listen(scs.config.server.controlPort, scs.config.server.netLocation);
@@ -128,14 +253,16 @@ var ServerControlService = function () {
 				}
 			});
 
-			//		try {
-			//			scs.serverSocket = scs.server.listen( scs.config.server.controlPort );
-			//			scs.eventEmitter.emit( scs.CONSTANTS.Events.ServerListening );
-			//		} catch (e) {
-			//			// TODO: handle exception
-			//			scs.eventEmitter.emit( scs.CONSTANTS.Events.ConfigError );
-			//
-			//		}
+			/*
+    
+   try {
+   	scs.serverSocket = scs.server.listen( scs.config.server.controlPort );
+   	scs.eventEmitter.emit( scs.CONSTANTS.Events.ServerListening );
+   } catch (e) {
+   	// TODO: handle exception
+   	scs.eventEmitter.emit( scs.CONSTANTS.Events.ConfigError );
+   		}
+   		*/
 		}
 
 		/**
@@ -152,17 +279,23 @@ var ServerControlService = function () {
 				res.send('ST Server Control Service');
 			});
 
-			scs.routes_Sensors = new SCS_RouteSensors(scs.stServer.sensorsManager);
-			scs.server.use('/Sensors', scs.routes_Sensors.expressRoute);
+			scs._scsRoutes.forEach(function (_route, _i) {
+				scs.server.use(_route.url, _route.expressRoute);
+			});
 
-			scs.routes_Actuators = new SCS_RouteActuators(scs.stServer.actuatorsManager);
-			scs.server.use('/Actuators', scs.routes_Actuators.expressRoute);
-
-			scs.routes_Nodes = new SCS_RouteNodes(scs.stServer.nodesManager);
-			scs.server.use('/Nodes', scs.routes_Nodes.expressRoute);
-
-			scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
-			scs.server.use('/Net', scs.routes_Net.expressRoute);
+			/*
+    
+   scs.routes_Sensors = new SCS_RouteSensors( scs.stServer.sensorsManager );
+   scs.server.use('/Sensors', scs.routes_Sensors.expressRoute);
+   
+   scs.routes_Actuators = new SCS_RouteActuators( scs.stServer.actuatorsManager );
+   scs.server.use('/Actuators', scs.routes_Actuators.expressRoute);
+   		scs.routes_Nodes = new SCS_RouteNodes( scs.stServer.nodesManager );
+   scs.server.use('/Nodes', scs.routes_Nodes.expressRoute);
+   		scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
+   scs.server.use('/Net', scs.routes_Net.expressRoute);
+   
+   */
 		}
 
 		/**
@@ -180,6 +313,8 @@ var ServerControlService = function () {
 			if (scs.server === null) {
 				throw "Server not running";
 			}
+
+			console.log('<~*~> ST Server.ServerControlService.stopService'); // TODO REMOVE DEBUG LOG
 
 			if (scs.state === scs.CONSTANTS.States.Running) {
 				scs.serverSocket.close();

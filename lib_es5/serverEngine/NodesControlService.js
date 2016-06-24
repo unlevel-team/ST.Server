@@ -60,7 +60,7 @@ var NodesControlService = function () {
 
 		this.config = config;
 		this.server = null;
-		this.serverSocket = null;
+		this.socket = null;
 		this.eventEmitter = new EventEmitter();
 
 		this.CONSTANTS = NodesControlService_CONSTANTS;
@@ -86,6 +86,7 @@ var NodesControlService = function () {
 			}
 
 			ncs.server = require('socket.io')();
+			ncs.socket = ncs.server;
 
 			// Map event connection... provides a new socket
 			ncs.server.on('connection', function (socket) {

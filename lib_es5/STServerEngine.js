@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * SomeThings Server
+ * SomeThings Server engine
  * 
  * starts a STServer
  */
@@ -33,16 +33,12 @@ try {
 	stServer._devMode = devMode;
 
 	stServer.init_Server();
-	stServer.init_NodesControlService();
-
-	stServer.init_NodesNetManager();
-	stServer.init_NodesNetService();
 
 	try {
-		stServer.init_ServerCOMSystem();
+		stServer.init_STNetwork();
 	} catch (e) {
 		// TODO: handle exception
-		throw "Cannot start ServerCOMSystem" + e;
+		throw "Cannot start ST Networrk" + e;
 	}
 
 	try {

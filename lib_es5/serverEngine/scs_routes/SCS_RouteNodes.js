@@ -30,11 +30,11 @@ var SCS_RouteNodes = function () {
 		key: 'mapServiceRoutes',
 		value: function mapServiceRoutes() {
 
-			this.expressRoute = express.Router();
 			var routerNodes = this;
+			routerNodes.expressRoute = express.Router();
 
 			// middleware that is specific to this router
-			this.expressRoute.use(function messageCount(req, res, next) {
+			routerNodes.expressRoute.use(function messageCount(req, res, next) {
 				routerNodes.messages++;
 
 				//			res.setHeader('Content-Type', 'text/html');
@@ -45,7 +45,7 @@ var SCS_RouteNodes = function () {
 			});
 
 			// define the home page route
-			this.expressRoute.get('/', function (req, res) {
+			routerNodes.expressRoute.get('/', function (req, res) {
 				//			res.write('Messages received: ' + routerNodes.messages + '<br />');
 				//			res.end();
 				var _response = {
@@ -59,7 +59,7 @@ var SCS_RouteNodes = function () {
 			});
 
 			// define the home page route with commands
-			//		this.expressRoute.get('/:command', function(req, res) {
+			//		routerNodes.expressRoute.get('/:command', function(req, res) {
 			//
 			//			let _response = {
 			//					"context" : "ST Server Nodes",
@@ -71,7 +71,7 @@ var SCS_RouteNodes = function () {
 			//		});
 
 			// List of Nodes
-			this.expressRoute.get('/list/', function (req, res) {
+			routerNodes.expressRoute.get('/list/', function (req, res) {
 
 				var _response = {
 					"context": "ST Server Nodes",
@@ -100,7 +100,7 @@ var SCS_RouteNodes = function () {
 			});
 
 			// Shut down Node
-			this.expressRoute.get('/:nodeID/shutdown', function (req, res) {
+			routerNodes.expressRoute.get('/:nodeID/shutdown', function (req, res) {
 
 				console.log(' <*> SeverControlService Nodes shutdown'); // TODO REMOVE DEBUG LOG
 
