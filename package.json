@@ -1,6 +1,6 @@
 {
   "name": "st.server",
-  "version": "0.0.1-beta00-build006",
+  "version": "0.0.1-beta00-build007",
   "description": "ST Server",
   "readme": "ST Server",
   "readmeFilename": "readme.md",
@@ -27,7 +27,8 @@
     "socket.io-client": "~1.4",
     "body-parser" : "~1.15",
     "source-map-support": "*",
-    "st.network": "https://github.com/unlevel-team/ST.Network.git#public"
+    "st.network": "https://github.com/unlevel-team/ST.Network.git#public",
+    "st.engines": "https://github.com/unlevel-team/ST.Engines.git#public"
 
   },
   "devDependencies": {
