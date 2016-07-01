@@ -11,12 +11,27 @@
  
  */
 
+/**
+ * import EventEmitter
+ * @ignore
+ */
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var EventEmitter = require('events').EventEmitter;
+
+/**
+ * import portscanner
+ * @ignore
+ */
 var portscanner = require('portscanner');
+
+/**
+ * import express
+ * @ignore
+ */
 var express = require('express');
 
 /**
@@ -46,12 +61,28 @@ var ServerControlService_CONSTANTS = {
 
 /**
  * SCS_RouteRef
- * 
+ * <pre>
  * Provides reference to SCS routes
+ * </pre>
+ * 
+ * @class
+ * 
+ * @property {object} expressRoute - Express route object
+ * @property {string} url - URL for the route
  * 
  */
 
-var SCS_RouteRef = function SCS_RouteRef(expressRoute, url) {
+var SCS_RouteRef =
+
+/**
+ * 
+ * @constructs SCS_RouteRef
+ * 
+ * @param {object} expressRoute - Express route object
+ * @param {string} url - URL for the route
+ * 
+ */
+function SCS_RouteRef(expressRoute, url) {
 	_classCallCheck(this, SCS_RouteRef);
 
 	var scs_Route = this;
@@ -60,15 +91,39 @@ var SCS_RouteRef = function SCS_RouteRef(expressRoute, url) {
 	scs_Route.url = url;
 };
 
-/*
+/**
  * ServerControlService
- * 
+ * <pre>
  * Is the service for send and receive data control for Server administration
+ * </pre>
+ * 
+ * @class
+ * 
+ * @property {STServer} stServer - ST Server object
+ * @property {object} config - ST Server configuration object
+ * @property {object} server - Server 
+ * @property {object} serverSocket - Server socket
+ * @property {object} eventEmitter - Object for emit events
+ * 
+ * @property {string} state - State
+ * 
+ * @property {object} _scsRoutes - Express routes object
+ * @property {object} routes_Nodes - Routes for Nodes
+ * @property {object} routes_Engines - Routes for Engines
+ * @property {object} routes_Net - Routes for Net
  * 
  */
 
 
 var ServerControlService = function () {
+
+	/**
+  * 
+  * @constructs ServerControlService
+  * 
+  * @param {STServer} stServer - ST Server object
+  */
+
 	function ServerControlService(stServer) {
 		_classCallCheck(this, ServerControlService);
 
@@ -88,10 +143,15 @@ var ServerControlService = function () {
 
 		scs.routes_Nodes = null;
 		scs.routes_Engines = null;
-		scs.routes_Sensors = null;
-		scs.routes_Actuators = null;
+		//		scs.routes_Sensors = null;
+		//		scs.routes_Actuators = null;
 		scs.routes_Net = null;
 	}
+
+	/**
+  * Initialize
+  */
+
 
 	_createClass(ServerControlService, [{
 		key: 'initialize',

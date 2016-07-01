@@ -13,7 +13,10 @@
 
  */
 
-// require our modules
+/**
+ * import ServerConfiguration
+ * @ignore
+ */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -21,18 +24,60 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var ServerConfiguration = require('./ServerConfiguration.js');
 
+/**
+ * import NodesControlService
+ * @ignore
+ */
 var NodesControlService = require('./NodesControlService.js');
+
+/**
+ * import NodesManager
+ * @ignore
+ */
 var NodesManager = require('./NodesManager.js');
 
+/**
+ * import ServerControlService
+ * @ignore
+ */
 var ServerControlService = require('./ServerControlService.js');
 
+/**
+ * import readline
+ * @ignore
+ */
 var readline = require('readline');
 
 /**
  * ST Server
+ * 
+ * @class
+ * 
+ * @property {object} serverConfiguration - Server configuration object
+ * 
+ * @property {EnginesSystem} ngSYS - Engines System
+ * @property {SensorsManager} sensorsManager - Sensors manager
+ * @property {ActuatorsManager} actuatorsManager - Actuators manager
+ * 
+ * @property {NodesManager} nodesManager - Nodes manager
+ * @property {NodesControlService} nodesControlService - Nodes Control service
+ * 
+ * @property {NodesNetManager} nodesNetManager - Nodes Net manager
+ * @property {NodesNetService} nodesNetService - Nodes Net service
+ * 
+ * @property {ServerControlService} serverControlService - Nodes Net service
+ * 
+ * @property {object} miniCLI - mini CLI
+ * 
  */
 
 var STServer = function () {
+
+	/**
+  * 
+  * @constructs STServer
+  */
+
 	function STServer() {
 		_classCallCheck(this, STServer);
 
@@ -49,6 +94,7 @@ var STServer = function () {
 
 		stServer.nodesNetManager = null;
 		stServer.nodesNetService = null;
+
 		stServer.serverControlService = null;
 
 		stServer.miniCLI = null;

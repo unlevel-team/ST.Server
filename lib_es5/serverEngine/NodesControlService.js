@@ -9,14 +9,33 @@
 
  */
 
+/**
+ * import EventEmitter
+ * @ignore
+ */
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var EventEmitter = require('events').EventEmitter;
+
+/**
+ * import portscanner
+ * @ignore
+ */
 var portscanner = require('portscanner');
+
+/**
+ * import http
+ * @ignore
+ */
 var http = require('http');
 
+/**
+ * import DataChannel
+ * @ignore
+ */
 var DataChannel = require('st.network').DataChannel;
 
 /**
@@ -47,14 +66,31 @@ var NodesControlService_CONSTANTS = {
 	}
 };
 
-/*
+/**
  * NodesControlService
- *
+ * <pre>
  * Is the service for send and receive control messages with Nodes
- *
+ * </pre>
+ * 
+ * @class
+ * 
+ * @property {object} config - Configuration object
+ * @property {object} server - Server
+ * @property {object} socket - Socket
+ * @property {object} eventEmitter - Object for emit events
+ * 
+ * @property {string} state - State
+ * 
  */
 
 var NodesControlService = function () {
+
+	/**
+  * @constructs NodesControlService
+  * 
+  * @param {object} config - Configuration object
+  */
+
 	function NodesControlService(config) {
 		_classCallCheck(this, NodesControlService);
 
@@ -136,6 +172,8 @@ var NodesControlService = function () {
 
 		/**
    * Map control messages
+   * 
+   * @param {object} socket - Socket object
    */
 
 	}, {

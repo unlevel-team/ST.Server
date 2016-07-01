@@ -11,6 +11,11 @@
  
  */
 
+/**
+ * import EventEmitter
+ * @ignore
+ */
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -47,9 +52,26 @@ var NodesManager_CONSTANTS = {
 
 /**
  * ST Node
+ * 
+ * @class
+ * 
+ * @property {string} state - State
+ * @property {object} config - Configuration object
+ * @property {object} socket - Socket object
+ * @property {object} eventEmitter - Object for emit events
+ * 
+ * 
  */
 
 var Node = function () {
+
+	/**
+  * @constructs Node
+  * 
+  * @param {object} config - Configuration object
+  * @param {object} socket - Socket object
+  */
+
 	function Node(config, socket) {
 		_classCallCheck(this, Node);
 
@@ -118,11 +140,36 @@ var Node = function () {
 }();
 
 /**
+ * The ServerConfiguration JSON file.
+ * 
+ * @typedef {Object} Result_Node
+ * @memberof NodesManager
+ * @type Object
+ * 
+ * @property {Node} stNode - Node
+ * @property {number} position - Node position in list
+ * 
+ * 
+ */
+
+/**
  * ST Nodes Manager
+ * 
+ * @class
+ * 
+ * @property {Node[]} nodeList - Nodes list
+ * @property {object} eventEmitter - Object for emit events
+ * 
  */
 
 
 var NodesManager = function () {
+
+	/**
+  * 
+  * @constructs NodesManager
+  */
+
 	function NodesManager() {
 		_classCallCheck(this, NodesManager);
 
@@ -135,6 +182,9 @@ var NodesManager = function () {
 
 	/**
   * Add ST Node
+  * 
+  * @param {object} config - Node configuration
+  * @param {socket} socket - Node control socket
   */
 
 
@@ -162,6 +212,11 @@ var NodesManager = function () {
 
 		/**
    * Returns Node searched by ID
+   * 
+   * @param {string} nodeID - Node ID
+   * @param {string} state - State
+   * 
+   * @returns {NodesManager.Result_Node} 
    */
 
 	}, {
@@ -201,6 +256,10 @@ var NodesManager = function () {
 
 		/**
    * Returns Node searched by Socket
+   * 
+   * @param {object} socket - Socket object
+   * 
+   * @returns {NodesManager.Result_Node} 
    */
 
 	}, {
@@ -228,6 +287,8 @@ var NodesManager = function () {
 
 		/**
    * ShutDown Node
+   * 
+   * @param {string} nodeID - Node ID
    */
 
 	}, {
