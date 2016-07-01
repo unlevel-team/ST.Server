@@ -1,13 +1,14 @@
 {
   "name": "st.server",
-  "version": "0.0.1-alpha00-build007",
+  "version": "0.0.1-alpha00-build008",
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
     "startdev": "node --harmony lib/STServerEngine.js dev",
     "start": "node lib_es5/STServerEngine.js",
     "gulp": "gulp",
-    "toES5": "gulp babel"
+    "toES5": "gulp babel",
+    "jsDocs": "gulp docs"
   },
   "main": "lib/serverEngine/ST_Server.js",
   "keywords": [
@@ -33,7 +34,8 @@
 	    "babel-preset-es2015": "*",
 	    "gulp": "*",
 	    "gulp-babel": "*",
-	    "gulp-sourcemaps": "*"
+	    "gulp-sourcemaps": "*",
+	    "jsdoc": "*"
 
 	  },
   "preferGlobal": false,
