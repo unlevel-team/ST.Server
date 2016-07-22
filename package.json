@@ -1,6 +1,6 @@
 {
   "name": "st.server",
-  "version": "0.0.1-beta00-build008",
+  "version": "0.0.1-beta00-build009",
   "description": "ST Server",
   "readme": "ST Server",
   "readmeFilename": "readme.md",
@@ -8,9 +8,9 @@
   "scripts": {
     "startdev": "node --harmony lib/STServerEngine.js dev",
     "start": "node lib_es5/STServerEngine.js",
-    "gulp": "gulp",
     "toES5": "gulp babel",
-    "jsDocs": "gulp docs"
+    "jsDocs": "gulp docs",
+    "updateLibs": "npm install --production st.engines st.network"
   },
   "main": "lib_es5/serverEngine/ST_Server.js",
   "keywords": [
@@ -33,13 +33,13 @@
 
   },
   "devDependencies": {
-	    "babel-preset-es2015": "*",
-	    "gulp": "*",
-	    "gulp-babel": "*",
-	    "gulp-sourcemaps": "*",
-	    "jsdoc": "*"
+    "babel-preset-es2015": "*",
+    "gulp": "*",
+    "gulp-babel": "*",
+    "gulp-sourcemaps": "*",
+    "jsdoc": "*"
 
-	  },
+  },
   "preferGlobal": false,
   "private": true,
   "analyze": true,
