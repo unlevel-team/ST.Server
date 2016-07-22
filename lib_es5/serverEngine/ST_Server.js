@@ -52,6 +52,7 @@ var readline = require('readline');
  * ST Server
  * 
  * @class
+ * @memberof st.serverEngine
  * 
  * @property {object} serverConfiguration - Server configuration object
  * 

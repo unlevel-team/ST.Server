@@ -36,6 +36,7 @@ var express = require('express');
 
 /**
  * ServerControlService CONSTANTS
+ * @memberof st.serverEngine
  */
 var ServerControlService_CONSTANTS = {
 	"Events": {
@@ -66,6 +67,7 @@ var ServerControlService_CONSTANTS = {
  * </pre>
  * 
  * @class
+ * @memberof st.serverEngine
  * 
  * @property {object} expressRoute - Express route object
  * @property {string} url - URL for the route
@@ -98,8 +100,9 @@ function SCS_RouteRef(expressRoute, url) {
  * </pre>
  * 
  * @class
+ * @memberof st.serverEngine
  * 
- * @property {STServer} stServer - ST Server object
+ * @property {st.serverEngine.STServer} stServer - ST Server object
  * @property {object} config - ST Server configuration object
  * @property {object} server - Server 
  * @property {object} serverSocket - Server socket
@@ -111,6 +114,8 @@ function SCS_RouteRef(expressRoute, url) {
  * @property {object} routes_Nodes - Routes for Nodes
  * @property {object} routes_Engines - Routes for Engines
  * @property {object} routes_Net - Routes for Net
+ * 
+ * @property {number} messages - Number of messages
  * 
  */
 
@@ -146,6 +151,8 @@ var ServerControlService = function () {
 		//		scs.routes_Sensors = null;
 		//		scs.routes_Actuators = null;
 		scs.routes_Net = null;
+
+		scs.messages = 0;
 	}
 
 	/**
@@ -181,8 +188,6 @@ var ServerControlService = function () {
 				// TODO: handle exception
 				throw "Cannont initialize Net. " + e;
 			}
-
-			//		scs._init_Engines__OLD();
 		}
 
 		/**
@@ -341,6 +346,17 @@ var ServerControlService = function () {
 
 			scs._scsRoutes.forEach(function (_route, _i) {
 				scs.server.use(_route.url, _route.expressRoute);
+			});
+
+			// middleware that is specific to this router
+			scs.server.use(function messageCount(req, res, next) {
+
+				scs.messages++;
+				//			res.header("Access-Control-Allow-Origin", "*");
+				//		  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+				//			res.setHeader('Access-Control-Allow-Origin', '*');
+				next();
 			});
 
 			/*

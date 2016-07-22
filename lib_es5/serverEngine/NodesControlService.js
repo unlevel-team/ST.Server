@@ -40,6 +40,7 @@ var DataChannel = require('st.network').DataChannel;
 
 /**
  * NodesControlService CONSTANTS
+ * @memberof st.serverEngine
  */
 var NodesControlService_CONSTANTS = {
 
@@ -73,6 +74,7 @@ var NodesControlService_CONSTANTS = {
  * </pre>
  * 
  * @class
+ * @memberof st.serverEngine
  * 
  * @property {object} config - Configuration object
  * @property {object} server - Server

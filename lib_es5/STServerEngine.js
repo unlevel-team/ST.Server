@@ -6,6 +6,20 @@
  * starts a STServer
  */
 
+/**
+ * SomeThins project
+ * 
+ * @namespace st
+ */
+
+/**
+ * SomeThings Node Engine
+ * 
+ * @namespace st.serverEngine
+ * @memberof  st
+ * 
+ */
+
 // Gulp+Babel tricks ~ ~ - - ~ ~ ~ - - ~ \/ ~ ~
 var devMode = false;
 

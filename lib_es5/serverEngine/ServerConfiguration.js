@@ -10,6 +10,7 @@
 
 /**
  * ServerConfiguration CONSTANTS
+ * @memberof st.serverEngine
  */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -24,7 +25,7 @@ var ServerConfiguration_CONSTANTS = {
  * The ServerConfiguration JSON file.
  * 
  * @typedef {Object} ServerConfig_JSON
- * @memberof ServerConfiguration
+ * @memberof st.serverEngine.ServerConfiguration
  * @type Object
  * 
  * @property {string} type='Config' - Type on JSON
@@ -50,6 +51,7 @@ var ServerConfiguration_CONSTANTS = {
  * ServerConfiguration
  * 
  * @class 
+ * @memberof st.serverEngine
  * 
  * @property {object} config - Configuration obejct
  * 

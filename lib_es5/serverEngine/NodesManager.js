@@ -24,6 +24,7 @@ var EventEmitter = require('events').EventEmitter;
 
 /**
  * NodesManager_CONSTANTS
+ * @memberof st.serverEngine
  */
 var NodesManager_CONSTANTS = {
 
@@ -54,6 +55,7 @@ var NodesManager_CONSTANTS = {
  * ST Node
  * 
  * @class
+ * @memberof st.serverEngine
  * 
  * @property {string} state - State
  * @property {object} config - Configuration object
@@ -143,10 +145,10 @@ var Node = function () {
  * The ServerConfiguration JSON file.
  * 
  * @typedef {Object} Result_Node
- * @memberof NodesManager
+ * @memberof st.serverEngine.NodesManager
  * @type Object
  * 
- * @property {Node} stNode - Node
+ * @property {st.serverEngine.Node} stNode - Node
  * @property {number} position - Node position in list
  * 
  * 
@@ -156,6 +158,7 @@ var Node = function () {
  * ST Nodes Manager
  * 
  * @class
+ * @memberof st.serverEngine
  * 
  * @property {Node[]} nodeList - Nodes list
  * @property {object} eventEmitter - Object for emit events
