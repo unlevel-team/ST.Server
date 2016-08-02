@@ -1,6 +1,6 @@
 {
   "name": "st.server",
-  "version": "0.0.1-alpha00-build011",
+  "version": "0.0.1-alpha00-build012",
   "description": "ST Server",
   "author": "Unlevel Team <unlevelteam@gmail.com>",
   "scripts": {
@@ -20,15 +20,15 @@
     "actuator"
   ],
   "dependencies": {
-	"portscanner" : "~1.0.0",
-    "express" : "^4.13.4",
-    "socket.io" : "~1.4",
+    "body-parser": "~1.15",
+    "express": "^4.13.4",
+    "minimist": "^1.2.0",
+    "portscanner": "~1.0.0",
+    "socket.io": "~1.4",
     "socket.io-client": "~1.4",
-    "body-parser" : "~1.15",
     "source-map-support": "*",
-    "st.network": "file:../NLVL_STNetwork/",
-    "st.engines": "file:../NLVL_STEngines/"
-
+    "st.engines": "file:../NLVL_STEngines/",
+    "st.network": "file:../NLVL_STNetwork/"
   },
   "devDependencies": {
     "babel-preset-es2015": "*",
@@ -36,13 +36,9 @@
     "gulp-babel": "*",
     "gulp-sourcemaps": "*",
     "jsdoc": "*"
-
   },
   "preferGlobal": false,
   "private": true,
   "analyze": true,
   "license": "MIT"
 }
-
-
-
