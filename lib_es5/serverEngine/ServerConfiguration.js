@@ -18,7 +18,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ServerConfiguration_CONSTANTS = {
-  "configFile": "conf/serverconfig.json"
+	"configFile": "conf/serverconfig.json"
 };
 
 /**
@@ -59,41 +59,55 @@ var ServerConfiguration_CONSTANTS = {
 
 var ServerConfiguration = function () {
 
-  /**
-   * @constructs ServerConfiguration
-   */
+	/**
+  * @constructs ServerConfiguration
+  */
 
-  function ServerConfiguration() {
-    _classCallCheck(this, ServerConfiguration);
+	function ServerConfiguration() {
+		_classCallCheck(this, ServerConfiguration);
 
-    this.config = null;
-    this.CONSTANTS = ServerConfiguration_CONSTANTS;
-  }
+		this.config = null;
+		this.CONSTANTS = ServerConfiguration_CONSTANTS;
+	}
 
-  /**
-   * Read configuration from file
-   */
+	/**
+  * Read configuration from file
+  * 
+  * @param {object} options - Options object
+  * @param {string} [options.configFile] - configuration file path
+  * 
+  */
 
 
-  _createClass(ServerConfiguration, [{
-    key: "readFile",
-    value: function readFile() {
-      var fs = require('fs');
+	_createClass(ServerConfiguration, [{
+		key: "readFile",
+		value: function readFile(options) {
 
-      try {
-        var obj = JSON.parse(fs.readFileSync(ServerConfiguration_CONSTANTS.configFile, 'utf8'));
-        this.config = obj;
-      } catch (e) {
-        // TODO: handle exception
-        console.log('ServerConfiguration.readFile Error'); // TODO REMOVE DEBUG LOG
-        console.log(e.message); // TODO REMOVE DEBUG LOG
-      }
+			if (options === undefined) {
+				options = {};
+			}
 
-      console.log('ServerConfiguration.readFile OK'); // TODO REMOVE DEBUG LOG
-    }
-  }]);
+			var _configFile = ServerConfiguration_CONSTANTS.configFile;
+			if (options.configFile !== undefined) {
+				_configFile = options.configFile;
+			}
 
-  return ServerConfiguration;
+			var fs = require('fs');
+
+			try {
+				var obj = JSON.parse(fs.readFileSync(_configFile, 'utf8'));
+				this.config = obj;
+			} catch (e) {
+				// TODO: handle exception
+				console.log('ServerConfiguration.readFile Error'); // TODO REMOVE DEBUG LOG
+				console.log(e.message); // TODO REMOVE DEBUG LOG
+			}
+
+			console.log('ServerConfiguration.readFile OK'); // TODO REMOVE DEBUG LOG
+		}
+	}]);
+
+	return ServerConfiguration;
 }();
 
 module.exports = ServerConfiguration;

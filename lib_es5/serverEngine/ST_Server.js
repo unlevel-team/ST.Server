@@ -77,12 +77,24 @@ var STServer = function () {
 	/**
   * 
   * @constructs STServer
+  * 
+  * @param {object} options - Options object
+  * 
   */
 
-	function STServer() {
+	function STServer(options) {
 		_classCallCheck(this, STServer);
 
+		if (options === undefined) {
+			options = {};
+		}
+
 		var stServer = this;
+		stServer._config = {};
+
+		if (options.config !== undefined) {
+			stServer._config = options.config;
+		}
 
 		stServer.serverConfiguration = null;
 
@@ -130,20 +142,23 @@ var STServer = function () {
 		key: 'loadConfig',
 		value: function loadConfig() {
 
-			var stServer = this;
+			var _stServer = this;
+			var _config = _stServer._config;
 
-			if (stServer.serverConfiguration !== null) {
+			if (_stServer.serverConfiguration !== null) {
 				throw 'Server configuration is loaded.';
 			}
 
 			// --- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Server configuration
 			// -------------------------------------------------------------------------------|\/|---
-			stServer.serverConfiguration = new ServerConfiguration();
+			_stServer.serverConfiguration = new ServerConfiguration();
 
-			stServer.serverConfiguration.readFile();
+			_stServer.serverConfiguration.readFile({
+				'configFile': _config.configfile
+			});
 
-			if (stServer.serverConfiguration.config === null) {
+			if (_stServer.serverConfiguration.config === null) {
 
 				console.log('Error in configuration'); // TODO REMOVE DEBUG LOG
 
@@ -152,7 +167,7 @@ var STServer = function () {
 			}
 			console.log('<*> ST Server'); // TODO REMOVE DEBUG LOG
 			console.log(' <~~~> ServerConfiguration'); // TODO REMOVE DEBUG LOG
-			console.log(stServer.serverConfiguration.config); // TODO REMOVE DEBUG LOG
+			console.log(_stServer.serverConfiguration.config); // TODO REMOVE DEBUG LOG
 
 			//-------------------------------------------------------------------------------|/\|---
 		}
@@ -543,7 +558,7 @@ var STServer = function () {
 
 					case 'sensorslist':
 						console.log('>>> Sensors List');
-						console.log(stServer.sensorsManager.sensorList);
+						console.log(stServer.sensorsManager.sensorsList);
 						break;
 
 					case 'actuatorslist':

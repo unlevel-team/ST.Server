@@ -35,43 +35,67 @@ if (!process.argv[2] || process.argv[2] !== 'dev') {
 }
 // ~ - - ~ ~ ~ - - ~ ~ ~ - - ~ ~ ~ - - ~ /\ ~ ~
 
+// Parse arguments
+var _sliceIndex = 2;
+if (devMode === true) {
+	_sliceIndex++;
+}
+
+var _argv = require('minimist')(process.argv.slice(_sliceIndex));
+console.log(_argv); // TODO REMOVE DEBUG LOG
+
 /**
  * import STServer
  * @ignore
  */
 var STServer = require('./serverEngine/ST_Server.js');
 
+// Set server options
+var _sOptions = {
+	'config': {
+		'devMode': devMode,
+		'argv': _argv
+	}
+};
+
+if (_argv.configfile !== undefined) {
+	_sOptions.config.configfile = _argv.configfile;
+}
+
 /**
  * ST Server Main loop
- * 
  * @ignore
  */
-var stServer = new STServer();
+var stServer = new STServer(_sOptions);
+
 try {
 
-	stServer._devMode = devMode;
-
-	stServer.init_Server();
+	try {
+		stServer.init_Server();
+	} catch (e) {
+		// TODO: handle exception
+		throw "Cannot initialize ST Server." + e;
+	}
 
 	try {
 		stServer.init_STNetwork();
 	} catch (e) {
 		// TODO: handle exception
-		throw "Cannot start ST Networrk" + e;
+		throw "Cannot start ST Networrk. " + e;
 	}
 
 	try {
 		stServer.init_ServerControlService();
 	} catch (e) {
 		// TODO: handle exception
-		throw "Cannot start ServerControlService" + e;
+		throw "Cannot start ServerControlService. " + e;
 	}
 
 	try {
 		stServer.init_MiniCLI();
 	} catch (e) {
 		// TODO: handle exception
-		throw "Cannot start miniCLI" + e;
+		throw "Cannot start miniCLI. " + e;
 	}
 } catch (e) {
 
