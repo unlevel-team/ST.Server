@@ -1,0 +1,16 @@
+{
+	"type": "Config",
+	"typeExtra": "Server",
+	
+	"nodes": {
+		"netLocation": "0.0.0.0",
+		"controlPort": 5677
+	},
+	
+	"server": {
+		"netLocation": "127.0.0.1",
+		"controlPort": 5679
+	}
+
+
+}
