@@ -89,28 +89,30 @@ var STServer = function () {
 			options = {};
 		}
 
-		var stServer = this;
-		stServer._config = {};
+		var _stServer = this;
+		_stServer._config = {};
 
 		if (options.config !== undefined) {
-			stServer._config = options.config;
+			_stServer._config = options.config;
 		}
 
-		stServer.serverConfiguration = null;
+		_stServer.serverConfiguration = null;
 
-		stServer.ngSYS = null;
-		stServer.sensorsManager = null;
-		stServer.actuatorsManager = null;
+		_stServer.ngSYS = null;
+		_stServer.sensorsManager = null;
+		_stServer.actuatorsManager = null;
 
-		stServer.nodesManager = null;
-		stServer.nodesControlService = null;
+		_stServer.nodesManager = null;
+		_stServer.nodesControlService = null;
 
-		stServer.nodesNetManager = null;
-		stServer.nodesNetService = null;
+		_stServer.nodesNetManager = null;
+		_stServer.nodesNetService = null;
 
-		stServer.serverControlService = null;
+		_stServer.serverNetManager = null;
 
-		stServer.miniCLI = null;
+		_stServer.serverControlService = null;
+
+		_stServer.miniCLI = null;
 	}
 
 	/**
@@ -212,6 +214,8 @@ var STServer = function () {
 		/**
    * Initialize engines system
    * 
+   * @throws Exception
+   * 
    */
 
 	}, {
@@ -253,6 +257,9 @@ var STServer = function () {
 
 		/**
    * Initialize Nodes Control Service
+   * <pre>
+   * Service for control Nodes
+   * </pre>
    */
 
 	}, {
@@ -314,13 +321,16 @@ var STServer = function () {
 
 		/**
    * Initialize ST Network
+   * <pre>
+   * Initializes all managers and services related to ST Network.
+   * </pre>
    */
 
 	}, {
 		key: 'init_STNetwork',
 		value: function init_STNetwork(options) {
 
-			var stServer = this;
+			var _stServer = this;
 
 			if (options === undefined || options === null) {
 				options = {};
@@ -329,11 +339,11 @@ var STServer = function () {
 			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// ST Network
 
-			var Services = require('st.network').get_Services();
+			var _services = require('st.network').get_Services();
 
 			try {
-				stServer._init_NodesNetManager({
-					"Services": Services
+				_stServer._init_NodesNetManager({
+					"Services": _services
 				});
 			} catch (e) {
 				// TODO: handle exception
@@ -341,8 +351,8 @@ var STServer = function () {
 			}
 
 			try {
-				stServer._init_NodesNetService({
-					"Services": Services
+				_stServer._init_NodesNetService({
+					"Services": _services
 				});
 			} catch (e) {
 				// TODO: handle exception
@@ -350,7 +360,7 @@ var STServer = function () {
 			}
 
 			try {
-				stServer._init_ServerCOMSystem();
+				_stServer._init_ServerCOMSystem();
 			} catch (e) {
 				// TODO: handle exception
 				throw "Cannot initilize ServerCOMSystem" + e;
@@ -359,13 +369,16 @@ var STServer = function () {
 
 		/**
    * Initialize Nodes Net manager
+   * <pre>
+   * Initializes the Net manager for nodes
+   * </pre>
    */
 
 	}, {
 		key: '_init_NodesNetManager',
 		value: function _init_NodesNetManager(options) {
 
-			var stServer = this;
+			var _stServer = this;
 
 			if (options === undefined || options === null) {
 				options = {};
@@ -374,35 +387,37 @@ var STServer = function () {
 			if (options.Services === undefined) {
 				throw 'Option Services is required.';
 			}
+			var _services = options.Services;
 
-			if (stServer.nodesNetManager !== null) {
+			if (_stServer.nodesNetManager !== null) {
 				throw 'Nodes net manager initialized.';
 			}
 
-			var Services = options.Services;
-
-			var NodesNetManager = Services.get_NodesNetManager();
+			var NodesNetManager = _services.get_NodesNetManager();
 
 			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes net Manager
-			stServer.nodesNetManager = new NodesNetManager();
+			_stServer.nodesNetManager = new NodesNetManager();
 		}
 
 		/**
    * Initialize Nodes Net service
+   * <pre>
+   * Initializes the Net services for nodes
+   * </pre>
    */
 
 	}, {
 		key: '_init_NodesNetService',
 		value: function _init_NodesNetService(options) {
 
-			var stServer = this;
+			var _stServer = this;
 
 			if (options === undefined || options === null) {
 				options = {};
 			}
 
-			if (stServer.nodesNetService !== null) {
+			if (_stServer.nodesNetService !== null) {
 				throw 'Nodes net service initialized.';
 			}
 
@@ -410,14 +425,14 @@ var STServer = function () {
 				throw 'Option Services is required.';
 			}
 
-			var Services = options.Services;
+			var _services = options.Services;
 
-			var NodesNetService = Services.get_NodesNetService();
+			var NodesNetService = _services.get_NodesNetService();
 
 			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// Nodes net service
-			stServer.nodesNetService = new NodesNetService(stServer.nodesManager, stServer.nodesNetManager);
-			stServer.nodesNetService.initialize();
+			_stServer.nodesNetService = new NodesNetService(_stServer.nodesManager, _stServer.nodesNetManager);
+			_stServer.nodesNetService.initialize();
 		}
 
 		/**
@@ -428,35 +443,30 @@ var STServer = function () {
 		key: '_init_ServerCOMSystem',
 		value: function _init_ServerCOMSystem() {
 
-			var stServer = this;
+			var _stServer = this;
 
-			if (stServer.comSYS !== undefined && stServer.comSYS !== null) {
+			if (_stServer.comSYS !== undefined && _stServer.comSYS !== null) {
 				throw 'Server COM System initialized.';
 			}
 
-			var COMSystem = require('st.network').get_COMSystem_Lib();
+			var _COMSystem = require('st.network').get_COMSystem_Lib();
 
 			//--- ~~ --- ~~ --- ~~ --- ~~ ---
 			// COM System
-			var comSYS_Config = {
+			var _comSYS_Config = {
 				"controlChannel": null,
-				"role": "Server",
-				"nodesManager": stServer.nodesManager,
-				"nodesNetManager": stServer.nodesNetManager,
-				"sensorManager": stServer.sensorsManager,
-				"actuatorsManager": stServer.actuatorsManager
-
+				"role": "Server"
 			};
 
-			stServer.comSYS = COMSystem.getCOMSystem(comSYS_Config);
+			_stServer.comSYS = _COMSystem.getCOMSystem(_comSYS_Config);
 
 			try {
-				stServer.comSYS.initialize();
+				_stServer.comSYS.initialize();
 			} catch (e) {
 
 				console.log('<EEE> ST Server.init_ServerCOMSystem'); // TODO REMOVE DEBUG LOG
 				console.log(' <~~~> ' + e); // TODO REMOVE DEBUG LOG
-				stServer._byebye();
+				_stServer._byebye();
 			}
 		}
 
@@ -470,9 +480,9 @@ var STServer = function () {
 		key: 'init_ServerControlService',
 		value: function init_ServerControlService() {
 
-			var stServer = this;
+			var _stServer = this;
 
-			if (stServer.serverControlService !== null) {
+			if (_stServer.serverControlService !== null) {
 				throw 'Server Control Service initialized.';
 			}
 
@@ -480,29 +490,29 @@ var STServer = function () {
 			// Server control Service
 			//-------------------------------------------------------------------------------|\/|---
 
-			stServer.serverControlService = new ServerControlService(stServer);
+			_stServer.serverControlService = new ServerControlService(_stServer);
 
-			var scs = stServer.serverControlService;
+			var _scs = _stServer.serverControlService;
 
-			scs.eventEmitter.on(scs.CONSTANTS.Events.ServerListening, function (data) {
+			_scs.eventEmitter.on(_scs.CONSTANTS.Events.ServerListening, function (data) {
 				console.log('<*> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
 				console.log(' <~~~> Server Listening'); // TODO REMOVE DEBUG LOG
 			});
 
-			scs.eventEmitter.on(scs.CONSTANTS.Events.ServerClosed, function (data) {
+			_scs.eventEmitter.on(_scs.CONSTANTS.Events.ServerClosed, function (data) {
 				console.log('<*> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
 				console.log(' <~~~> Server Closed'); // TODO REMOVE DEBUG LOG
 			});
 
-			scs.eventEmitter.on(scs.CONSTANTS.Events.ConfigError, function (data) {
+			_scs.eventEmitter.on(_scs.CONSTANTS.Events.ConfigError, function (data) {
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
 				console.log(' <~~~> Config Error'); // TODO REMOVE DEBUG LOG
 				console.log(data); // TODO REMOVE DEBUG LOG
 			});
 
 			try {
-				scs.initialize();
-				scs.startService();
+				_scs.initialize();
+				_scs.startService();
 			} catch (e) {
 				// TODO: handle exception
 				console.log('<EEE> ST Server.serverControlService'); // TODO REMOVE DEBUG LOG
@@ -518,6 +528,7 @@ var STServer = function () {
 	}, {
 		key: '_byebye',
 		value: function _byebye() {
+
 			var stServer = this;
 
 			console.log('Have a great day!');

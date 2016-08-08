@@ -132,27 +132,27 @@ var ServerControlService = function () {
 	function ServerControlService(stServer) {
 		_classCallCheck(this, ServerControlService);
 
-		var scs = this;
+		var _scs = this;
 
-		scs.stServer = stServer;
-		scs.config = stServer.serverConfiguration.config;
-		scs.server = null;
-		scs.serverSocket = null;
-		scs.eventEmitter = new EventEmitter();
+		_scs.stServer = stServer;
+		_scs.config = stServer.serverConfiguration.config;
+		_scs.server = null;
+		_scs.serverSocket = null;
+		_scs.eventEmitter = new EventEmitter();
 
-		scs.CONSTANTS = ServerControlService_CONSTANTS;
+		_scs.CONSTANTS = ServerControlService_CONSTANTS;
 
-		scs.state = ServerControlService_CONSTANTS.States.Config;
+		_scs.state = ServerControlService_CONSTANTS.States.Config;
 
-		scs._scsRoutes = null;
+		_scs.__scsRoutes = null;
 
-		scs.routes_Nodes = null;
-		scs.routes_Engines = null;
-		//		scs.routes_Sensors = null;
-		//		scs.routes_Actuators = null;
-		scs.routes_Net = null;
+		_scs.routes_Nodes = null;
+		_scs.routes_Engines = null;
+		//		_scs.routes_Sensors = null;
+		//		_scs.routes_Actuators = null;
+		_scs.routes_Net = null;
 
-		scs.messages = 0;
+		_scs.messages = 0;
 	}
 
 	/**
@@ -164,26 +164,26 @@ var ServerControlService = function () {
 		key: 'initialize',
 		value: function initialize() {
 
-			var scs = this;
+			var _scs = this;
 
-			scs._scsRoutes = [];
+			_scs._scsRoutes = [];
 
 			try {
-				scs._init_Nodes();
+				_scs._init_Nodes();
 			} catch (e) {
 				// TODO: handle exception
 				throw "Cannont initialize Nodes. " + e;
 			}
 
 			try {
-				scs._init_Engines();
+				_scs._init_Engines();
 			} catch (e) {
 				// TODO: handle exception
 				throw "Cannont initialize Engines. " + e;
 			}
 
 			try {
-				scs._init_Net();
+				_scs._init_Net();
 			} catch (e) {
 				// TODO: handle exception
 				throw "Cannont initialize Net. " + e;
@@ -199,20 +199,22 @@ var ServerControlService = function () {
 		key: '_init_Nodes',
 		value: function _init_Nodes() {
 
-			var scs = this;
+			var _scs = this;
 
 			var SCS_RouteNodes = require('./scs_routes/SCS_RouteNodes.js');
 
 			console.log('<~*~> ServerControlService._init_Nodes'); // TODO REMOVE DEBUG LOG
 
-			scs.routes_Nodes = new SCS_RouteNodes(scs.stServer.nodesManager);
-			var scsRoutes_Nodes = new SCS_RouteRef(scs.routes_Nodes.expressRoute, "/Nodes");
-			scs._scsRoutes.push(scsRoutes_Nodes);
+			_scs.routes_Nodes = new SCS_RouteNodes(_scs.stServer.nodesManager);
+			var _scsRoutes_Nodes = new SCS_RouteRef(_scs.routes_Nodes.expressRoute, "/Nodes");
+			_scs._scsRoutes.push(_scsRoutes_Nodes);
 		}
 
 		/**
    * Initialize control routes 
+   * <pre>
    * for Engines
+   * </pre>
    */
 
 	}, {
@@ -242,23 +244,35 @@ var ServerControlService = function () {
 
 		/**
    * Initialize control routes 
+   * <pre>
    * for Net
+   * </pre>
    */
 
 	}, {
 		key: '_init_Net',
 		value: function _init_Net() {
 
-			var scs = this;
+			var _scs = this;
+			var _stServer = _scs.stServer;
+			var _comSYS = _stServer.comSYS;
 
 			console.log('<~*~> ServerControlService._init_Net'); // TODO REMOVE DEBUG LOG
 
-			var SCS_RouteNet = require('st.network').get_SCS_RouteNet();
+			try {
+				_scs._routes_Net = _comSYS.getSCSRoutes({
+					'comSYS': _comSYS,
+					'nodesManager': _stServer.nodesManager,
+					'nodesNetManager': _stServer.nodesNetManager,
+					'serverNetManager': _stServer.serverNetManager
+				});
+			} catch (e) {
+				// TODO: handle exception
+				throw "Cannot get SCS Routes. " + e;
+			}
 
-			scs.routes_Net = new SCS_RouteNet(scs.stServer.nodesManager, scs.stServer.nodesNetManager, scs.stServer.serverNetManager);
-
-			var scsRoutes_Net = new SCS_RouteRef(scs.routes_Net.expressRoute, "/Net");
-			scs._scsRoutes.push(scsRoutes_Net);
+			var _scsRoutes_Net = new SCS_RouteRef(_scs._routes_Net.expressRoute, "/Net");
+			_scs._scsRoutes.push(_scsRoutes_Net);
 		}
 
 		/**
@@ -367,6 +381,7 @@ var ServerControlService = function () {
 				res.send('ST Server Control Service');
 			});
 
+			// Map SCS routes...
 			scs._scsRoutes.forEach(function (_route, _i) {
 				scs.server.use(_route.url, _route.expressRoute);
 			});
